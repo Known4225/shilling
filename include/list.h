@@ -51,7 +51,7 @@ find and delete element in the list (must specify type):
 list_remove(list, [element], 'i');
 
 copy one list to another
-list_copy(source, dest);
+list_copy(dest, source);
 
 delete all the elements of a list
 list_clear(list);
@@ -637,7 +637,8 @@ char *unitype_to_string_truncated_doubles(unitype item, char type, int truncate)
     return ret;
 }
 
-void list_copy(list_t *dest, list_t *src) { // copies one list to another (duplicates strings or pointers)
+/* copies one list to another (duplicates strings or pointers) */
+void list_copy(list_t *dest, list_t *src) {
     list_free_lite(dest);
     dest -> type = calloc(src -> realLength, sizeof(int));
     dest -> data = calloc(src -> realLength, sizeof(unitype));
@@ -647,8 +648,8 @@ void list_copy(list_t *dest, list_t *src) { // copies one list to another (dupli
     for (int i = 0; i < len; i++) {
         dest -> type[i] = src -> type[i];
         if (src -> type[i] == 'r') {
-            dest -> data[i] = (unitype) (void*) list_init();
-            list_copy(src -> data[i].r, dest -> data[i].r);
+            dest -> data[i] = (unitype) list_init();
+            list_copy(dest -> data[i].r, src -> data[i].r);
         } else {
             if (src -> type[i] == 'p') {
                 memcpy(dest -> data[i].p, src -> data[i].p, sizeof(unitype));

@@ -13,10 +13,12 @@ It's a really bad recommender, here are the details:
  - It is evaluated on three metrics, RMSE, X, and S
 */
 #include "include/csvParser.h"
+#include <math.h>
 
 /* shill strategy macros */
 #define SHILL_NAIVE_PUSH 1
 #define SHILL_NAIVE_NUKE 2
+#define SHILL_TARGETED_NUKE 3
 
 /*
 Movies are given an internal ID that does not skip numbers, these are not the same as the movieID from the dataset
@@ -30,10 +32,10 @@ typedef struct {
     list_t *internalMovieID;
     list_t *users; // spec: [userID (int), movies rated (list of ints (internalID)), ratings (list)]
     list_t *shills; // separate list of shills with the same spec as users
-    list_t *ranked; // top ranked movies based on users list, spec: [movieIDInternal (int), movieName (string), averageRank (double)]
+    list_t *ranked; // top ranked movies based on users list, spec: [movieIDInternal (int), movieName (string), averageRank (double), numberOfRatings (int)]
 
     int shillPush; // the ID of the movie that the shills are pushing
-    int shillNukeRandom; // the number of random movies that a nuke shill will rate 0/5
+    int shillNukeAmount; // the number of movies that a nuke shill will rate 0/5
 } model_t;
 
 /* random functions */
@@ -62,8 +64,8 @@ void modelInit(model_t *selfp) {
     self.shills = list_init();
     self.ranked = list_init();
 
-    self.shillPush = 2;
-    self.shillNukeRandom = 10;
+    self.shillPush = 1; // we are shilling for toy story
+    self.shillNukeAmount = 10; // default 10
     *selfp = self;
 }
 
@@ -100,6 +102,7 @@ void populateUsers(model_t *selfp) {
 /* create a bunch of shills */
 void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
     model_t self = *selfp;
+    // list_clear(self.shills);
     int shillID = self.users -> length; // start shill userIDs at the last userID + 1
     for (int i = 0; i < numberOfShills; i++) {
         list_append(self.shills, (unitype) list_init(), 'r');
@@ -112,20 +115,63 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
         }
         if (shillStrategy == SHILL_NAIVE_NUKE) {
-            // the naive shill nuke rates the shilled movie a 5/5 and x other random movies a 0/5 (x is determined by self.shillNukeRandom)
+            // the naive shill nuke rates the shilled movie a 5/5 and x other random movies a 0/5 (x is determined by self.shillNukeAmount)
             list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillPush, 'i');
             list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
             int randomMovie;
-            for (int j = 0; j < self.shillNukeRandom; j++) {
+            for (int j = 0; j < self.shillNukeAmount; j++) {
                 randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
-                while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') != -1) {
+                while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
                     randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
                 }
+                // printf("shill %d nuking movie %d\n", i, randomMovie);
                 list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
                 list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
             }
         }
+        if (shillStrategy == SHILL_TARGETED_NUKE) {
+            // this shill will rate the shilled movie a 5/5 and the x top movies a 0/5 (x is determined by self.shillNukeAmount)
+            // we must assume that the self.ranked list is already filled out
+            if (self.ranked -> length == 0) {
+                printf("cannot execute SHILL_TARGETED_NUKE, must call rankMovies first\n");
+                return;
+            }
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillPush, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
+
+            list_t *topMovies = list_init();
+            list_t *averageRank = list_init();
+            list_t *numberOfRatings = list_init();
+            for (int k = 0; k < self.shillNukeAmount; k++) {
+                double maxAverageRank = -1;
+                int ratingsCount;
+                int topMovie;
+                for (int j = 1; j < self.ranked -> length; j++) {
+                    double compare = self.ranked -> data[j].r -> data[2].d * log(self.ranked -> data[j].r -> data[3].i + 1) / log(10);
+                    // printf("comapre: %lf\n", compare);
+                    if (list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxAverageRank) {
+                        maxAverageRank = compare;
+                        topMovie = j;
+                        ratingsCount = self.ranked -> data[j].r -> data[3].i;
+                    }
+                }
+                list_append(topMovies, (unitype) topMovie, 'i');
+                list_append(averageRank, (unitype) maxAverageRank, 'd');
+                list_append(numberOfRatings, (unitype) ratingsCount, 'i');
+            }
+            for (int j = 0; j < self.shillNukeAmount; j++) {
+                // printf("shill %d nuking movie %d\n", i, convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i));
+                // printf("shill %d nuking movie %d\n", i, self.movies -> data[0].r -> data[topMovies -> data[j].i].i);
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i), 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+            }
+            list_free(topMovies);
+            list_free(averageRank);
+            list_free(numberOfRatings);
+        }
+        shillID++;
     }
+    // list_print(self.shills);
     *selfp = self;
 }
 
@@ -138,6 +184,7 @@ void combineUsersAndShills(model_t *selfp) {
     *selfp = self;
 }
 
+/* calculates each movie's average rank */
 void rankMovies(model_t *selfp) {
     model_t self = *selfp;
     list_clear(self.ranked);
@@ -149,9 +196,10 @@ void rankMovies(model_t *selfp) {
         list_append(self.ranked -> data[i].r, self.movies -> data[0].r -> data[i], 'i'); // movieID
         list_append(self.ranked -> data[i].r, self.movies -> data[1].r -> data[i], 's'); // movieName
         list_append(self.ranked -> data[i].r, (unitype) (double) 0.0, 'd'); // average rank (unknown)
+        list_append(self.ranked -> data[i].r, (unitype) 0, 'i'); // number of ratings (unknown)
 
         list_append(tempSumRanks, (unitype) (double) 0.0, 'd');
-        list_append(tempNumRatings, (unitype) 0, 'i');
+        list_append(tempNumRatings, (unitype) 0, 'i'); 
     }
     for (int i = 0; i < self.users -> length; i++) {
         /* loop over all users */
@@ -163,40 +211,68 @@ void rankMovies(model_t *selfp) {
             tempNumRatings -> data[self.users -> data[i].r -> data[1].r -> data[j].i].i++;
         }
     }
-    for (int i = 0; i < self.movies -> length; i++) {
+    for (int i = 0; i < self.movies -> data[0].r -> length; i++) {
+        /* fill in number of ratings */
+        self.ranked -> data[i].r -> data[3] = tempNumRatings -> data[i];
         /* calculate average rank as sum of rankings / number of rankings */
         self.ranked -> data[i].r -> data[2].d = tempSumRanks -> data[i].d / tempNumRatings -> data[i].i;
     }
     list_free(tempSumRanks);
     list_free(tempNumRatings);
+    // list_print(self.ranked -> data[278].r);
     *selfp = self;
 }
 
-void displayTopTenMovies(model_t *selfp, list_t *rankList) {
+/*
+displays top x movies given a ranked list
+Calculated by average rating * log(numberOfRatings + 1)
+the log base is 10
+
+This is a made up metric, but it makes some sense to gauge how well liked a movie is.
+I just want to see what the affect of the shills are on this
+*/
+void displayTopMovies(model_t *selfp, list_t *rankList, int topX) {
     list_t *topMovies = list_init();
     list_t *averageRank = list_init();
-    for (int j = 0; j < 10; j++) {
+    list_t *numberOfRatings = list_init();
+    // list_print(rankList -> data[278].r);
+    for (int j = 0; j < topX; j++) {
         double maxAverageRank = -1;
+        int ratingsCount;
         int topMovie;
-        for (int i = 0; i < rankList -> length; i++) {
-            if (list_count(topMovies, (unitype) i, 'i') == 0 && rankList -> data[i].r -> data[2].d > maxAverageRank) {
-                maxAverageRank = rankList -> data[i].r -> data[2].d;
-                topMovie = rankList -> data[i].r -> data[0].i;
+        for (int i = 1; i < rankList -> length; i++) {
+            double compare = rankList -> data[i].r -> data[2].d * log(rankList -> data[i].r -> data[3].i + 1) / log(10);
+            if (list_count(topMovies, (unitype) i, 'i') == 0 && compare > maxAverageRank) {
+                // printf("compare: %d %lf %lf %d\n", i, compare, rankList -> data[i].r -> data[2].d, rankList -> data[i].r -> data[3].i);
+                maxAverageRank = compare;
+                topMovie = i;
+                ratingsCount = rankList -> data[i].r -> data[3].i;
             }
-            
         }
         list_append(topMovies, (unitype) topMovie, 'i');
         list_append(averageRank, (unitype) maxAverageRank, 'd');
+        list_append(numberOfRatings, (unitype) ratingsCount, 'i');
     }
-    for (int i = 0; i < 10; i++) {
-        printf("%d. (ID: %d) %s, average rating: %lf\n", i + 1, selfp -> movies -> data[0].r -> data[topMovies -> data[i].i].i, selfp -> movies -> data[1].r -> data[topMovies -> data[i].i].s, averageRank -> data[i].d);
+    for (int i = 0; i < topX; i++) {
+        printf("%d. (ID: %d, InternalID: %d) %s, score: %0.2lf with %d ratings\n", i + 1, selfp -> movies -> data[0].r -> data[topMovies -> data[i].i].i, convertToInternalMovieID(selfp, selfp -> movies -> data[0].r -> data[topMovies -> data[i].i].i), selfp -> movies -> data[1].r -> data[topMovies -> data[i].i].s, averageRank -> data[i].d, numberOfRatings -> data[i].i);
     }
     list_free(topMovies);
     list_free(averageRank);
+    list_free(numberOfRatings);
 }
 
-void RMSE() {
+/* generate predictions according to the X algorithm (what algorithm?) */
+void generatePredicitons(model_t *selfp) {
+    model_t self = *selfp;
+    *selfp = self;
+}
 
+/*
+Evaluate predictions with RMSE
+*/
+void RMSE(model_t *selfp) {
+    model_t self = *selfp;
+    *selfp = self;
 }
 
 int main(int argc, char  *argv[]) {
@@ -206,17 +282,18 @@ int main(int argc, char  *argv[]) {
     populateUsers(&self);
     /* rank movies */
     rankMovies(&self);
-    printf("Top 10 Movies by Average Ranking (No Shills):\n");
-    displayTopTenMovies(&self, self.ranked);
+    printf("\nTop 10 Movies by Average Ranking (No Shills):\n");
+    displayTopMovies(&self, self.ranked, 10);
     list_t *noShillRankings = list_init();
     list_copy(noShillRankings, self.ranked);
     /* generate shills */
-    populateShills(&self, 50, SHILL_NAIVE_PUSH);
+    // populateShills(&self, 140, SHILL_NAIVE_PUSH); // 140 shills are needed at minimum to get toy story to the top
+    // populateShills(&self, 140, SHILL_NAIVE_NUKE); // 140 shills are a maximum guarentee, it could be less based on random chance (with shillNukeAmount = 10)
+    populateShills(&self, 46, SHILL_TARGETED_NUKE); // just 46 targeted nuke shills are enough to get toy story to the top (with shillNukeAmount = 10)
     /* combine users and shills */
     combineUsersAndShills(&self);
     /* rank movies */
     rankMovies(&self);
-    printf("Top 10 Movies by Average Ranking (After Shills):\n");
-    displayTopTenMovies(&self, self.ranked);
-    
+    printf("\nTop 10 Movies by Average Ranking (After Shills):\n");
+    displayTopMovies(&self, self.ranked, 10);
 }
