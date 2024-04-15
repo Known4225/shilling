@@ -305,13 +305,83 @@ int list_find(list_t *list, unitype item, char type) {
     return -1;
 }
 
-int list_index(list_t *list, unitype item, char type) { // duplicate of list_find
+/* duplicate of list_find */
+int list_index(list_t *list, unitype item, char type) {
     int trig = 0;
     for (int i = 0; i < list -> length; i++) {
         trig += unitype_check_equal(list -> data[i], item, list -> type[i], type);
         if (trig == 1) {
             return i;
         }
+    }
+    return -1;
+}
+
+/* duplicate of list_find */
+int list_search(list_t *list, unitype item, char type) {
+    int trig = 0;
+    for (int i = 0; i < list -> length; i++) {
+        trig += unitype_check_equal(list -> data[i], item, list -> type[i], type);
+        if (trig == 1) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/* binary search - only works with lists of ints/short/char */
+int list_find_binary(list_t *list, int item) {
+    int top = list -> length;
+    int bottom = 0;
+    int trig = top / 2;
+    while (bottom < top) {
+        if (list -> data[trig].i == item) {
+            return trig;
+        }
+        if (list -> data[trig].i > item) {
+            top = trig;
+        } else {
+            bottom = trig + 1;
+        }
+        trig = bottom + (top - bottom) / 2;
+    }
+    return -1;
+}
+
+/* same as list_find_binary */
+int list_index_binary(list_t *list, int item) {
+    int top = list -> length;
+    int bottom = 0;
+    int trig = top / 2;
+    while (bottom < top) {
+        if (list -> data[trig].i == item) {
+            return trig;
+        }
+        if (list -> data[trig].i > item) {
+            top = trig;
+        } else {
+            bottom = trig + 1;
+        }
+        trig = bottom + (top - bottom) / 2;
+    }
+    return -1;
+}
+
+/* same as list_find_binary */
+int list_search_binary(list_t *list, int item) {
+    int top = list -> length;
+    int bottom = 0;
+    int trig = top / 2;
+    while (bottom < top) {
+        if (list -> data[trig].i == item) {
+            return trig;
+        }
+        if (list -> data[trig].i > item) {
+            top = trig;
+        } else {
+            bottom = trig + 1;
+        }
+        trig = bottom + (top - bottom) / 2;
     }
     return -1;
 }
