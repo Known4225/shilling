@@ -34,24 +34,25 @@ SHILL_RANDOM_BLEND_NUKE      user-user          1781                   1717     
 SHILL_TARGETED_BLEND_NUKE    user-user          1723                   1625                  NA          278          Correct
 
 I'm going to make one more table with srand set to a fixed value
-with srand = 1713216227, 100 shills, shill fill and blend amounts are 10
+with randPredictive (predSrand = 1), 100 shills, shill fill and blend amounts are 10
 
 Shill Strategy               Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
-SHILL_NAIVE_PUSH             user-user           394                    394                  1           NA           None
-SHILL_RANDOM_FILL_PUSH       user-user           394                    515                  1           NA           Correct
-SHILL_TARGETED_FILL_PUSH     user-user           394                    528                  1           NA           Correct
-SHILL_RANDOM_BLEND_PUSH      user-user           394                    515                  1           NA           Correct
-SHILL_TARGETED_BLEND_PUSH    user-user           394                    293                  1           NA           Opposite
+SHILL_NAIVE_PUSH             user-user           122                    122                  1           NA           None
+SHILL_RANDOM_FILL_PUSH       user-user           122                    167                  1           NA           Correct
+SHILL_TARGETED_FILL_PUSH     user-user           122                    142                  1           NA           Correct
+SHILL_RANDOM_BLEND_PUSH      user-user           122                    167                  1           NA           Correct
+SHILL_TARGETED_BLEND_PUSH    user-user           122                     85                  1           NA           Opposite
 
-SHILL_NAIVE_NUKE             user-user          1822                   1822                  NA          278          None
-SHILL_RANDOM_FILL_NUKE       user-user          1822                   2197                  NA          278          Opposite
-SHILL_TARGETED_FILL_NUKE     user-user          1822                   1641                  NA          278          Correct
-SHILL_RANDOM_BLEND_NUKE      user-user          1822                   1719                  NA          278          Correct
-SHILL_TARGETED_BLEND_NUKE    user-user          1822                   1766                  NA          278          Correct
+SHILL_NAIVE_NUKE             user-user           633                    633                  NA          278          None
+SHILL_RANDOM_FILL_NUKE       user-user           633                    785                  NA          278          Opposite
+SHILL_TARGETED_FILL_NUKE     user-user           633                    544                  NA          278          Correct
+SHILL_RANDOM_BLEND_NUKE      user-user           633                    598                  NA          278          Correct
+SHILL_TARGETED_BLEND_NUKE    user-user           633                    600                  NA          278          Correct
 
 I'm going to verify the values are the same on both windows and linux
 But if they are, we have some good results
 OKAY PROBLEM: THEY BEHAVE DIFFERENTLY ON LINUX AND WINDOWS
+I've changed the random function now...
 
 Analysing:
 So it seems like certain strategies are more/less/counter effective.
@@ -176,8 +177,8 @@ void modelInit(model_t *selfp) {
     /* generate testSize random values */
     list_t *randomValues = list_init();
     for (int i = 0; i < self.testSize; i++) {
-        if (i < 100)
-            printf("randomInt: %d\n", randomInt(1, self.trainRatings -> data[0].r -> length - 1));
+        // if (i < 100)
+        //     printf("randomInt: %d\n", randomInt(1, self.trainRatings -> data[0].r -> length - 1));
         list_append(randomValues, (unitype) randomInt(1, self.trainRatings -> data[0].r -> length - 1), 'i');
     }
     /* sort the random values */
@@ -245,7 +246,7 @@ void populateUsers(model_t *selfp) {
         userID++;
         // printf("user: %d, lineNumber %d\n", userID, lineNumber);
     }
-    list_print(self.trainUsers -> data[1].r);
+    // list_print(self.trainUsers -> data[1].r);
 
     /* testUsers */
     userID = 0;
@@ -268,7 +269,7 @@ void populateUsers(model_t *selfp) {
         userID++;
         // printf("user: %d, lineNumber %d\n", userID, lineNumber);
     }
-    list_print(self.testUsers -> data[1].r);
+    // list_print(self.testUsers -> data[1].r);
     *selfp = self;
 }
 
@@ -950,8 +951,8 @@ int main(int argc, char  *argv[]) {
     /* evaluate */
     printf("\nMAE Evaluation (No Shills): %lf\n", MAE(&self));
     printf("RMSE Evaluation (No Shills): %lf\n", RMSE(&self));
-    // printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
-    printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
+    printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
+    // printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
     /* rank movies */
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (No Shills):\n");
@@ -961,13 +962,13 @@ int main(int argc, char  *argv[]) {
     // populateShills(&self, 100, SHILL_RANDOM_FILL_PUSH); // 140 shills are a maximum guarentee, it could be less based on random chance (with shillPushFillAmount = 10)
     // populateShills(&self, 100, SHILL_TARGETED_FILL_PUSH); // just 46 targeted nuke shills are enough to get toy story to the top (with shillPushFillAmount = 10)
     // populateShills(&self, 100, SHILL_RANDOM_BLEND_PUSH);
-    // populateShills(&self, 100, SHILL_TARGETED_BLEND_PUSH);
+    populateShills(&self, 100, SHILL_TARGETED_BLEND_PUSH);
 
     // populateShills(&self, 100, SHILL_NAIVE_NUKE);
     // populateShills(&self, 100, SHILL_RANDOM_FILL_NUKE);
     // populateShills(&self, 100, SHILL_TARGETED_FILL_NUKE);
     // populateShills(&self, 100, SHILL_RANDOM_BLEND_NUKE);
-    populateShills(&self, 100, SHILL_TARGETED_BLEND_NUKE);
+    // populateShills(&self, 100, SHILL_TARGETED_BLEND_NUKE);
     /* combine users and shills */
     combineUsersAndShills(&self);
     /* generate predictions */
@@ -976,8 +977,8 @@ int main(int argc, char  *argv[]) {
     /* evaluate */
     printf("\nMAE Evaluation (After Shills): %lf\n", MAE(&self));
     printf("RMSE Evaluation (After Shills): %lf\n", RMSE(&self));
-    // printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
-    printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
+    printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
+    // printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
     /* rank movies */
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (After Shills):\n");
