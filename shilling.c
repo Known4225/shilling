@@ -51,6 +51,7 @@ SHILL_TARGETED_BLEND_NUKE    user-user          1822                   1766     
 
 I'm going to verify the values are the same on both windows and linux
 But if they are, we have some good results
+OKAY PROBLEM: THEY BEHAVE DIFFERENTLY ON LINUX AND WINDOWS
 
 Analysing:
 So it seems like certain strategies are more/less/counter effective.
@@ -117,11 +118,17 @@ typedef struct {
 } model_t;
 
 /* random functions */
+unsigned long predSrand = 1;
+int randPredictive(void) { // https://stackoverflow.com/questions/65980429/same-srand-seeds-produces-different-values-on-different-computers
+    predSrand = predSrand * 1103515245 + 12345;
+    return (unsigned int) (predSrand / 65536) % 32768;
+}
+
 extern inline int randomInt(int lowerBound, int upperBound) { // random integer between lower and upper bound (inclusive)
-    return (rand() % (upperBound - lowerBound + 1) + lowerBound);
+    return (randPredictive() % (upperBound - lowerBound + 1) + lowerBound);
 }
 extern inline double randomDouble(double lowerBound, double upperBound) { // random double between lower and upper bound
-    return (rand() * (upperBound - lowerBound) / RAND_MAX + lowerBound); // probably works idk
+    return (randPredictive() * (upperBound - lowerBound) / RAND_MAX + lowerBound); // probably works idk
 }
 
 /* loads the CSV files, initialises the lists, splits the train and test sets */
@@ -140,6 +147,9 @@ void modelInit(model_t *selfp) {
     /* print headers */
     // printRowCSV(self.movies, 0);
     // printRowCSV(self.trainRatings, 0);
+    // printRowCSV(self.trainRatings, 1);
+    // list_print(self.trainRatings -> data[1].r);
+    // printf("number of ratings: %d\n", self.trainRatings -> data[0].r -> length);
 
     self.trainUsers = list_init();
     self.testUsers = list_init();
@@ -166,6 +176,8 @@ void modelInit(model_t *selfp) {
     /* generate testSize random values */
     list_t *randomValues = list_init();
     for (int i = 0; i < self.testSize; i++) {
+        if (i < 100)
+            printf("randomInt: %d\n", randomInt(1, self.trainRatings -> data[0].r -> length - 1));
         list_append(randomValues, (unitype) randomInt(1, self.trainRatings -> data[0].r -> length - 1), 'i');
     }
     /* sort the random values */
@@ -233,7 +245,7 @@ void populateUsers(model_t *selfp) {
         userID++;
         // printf("user: %d, lineNumber %d\n", userID, lineNumber);
     }
-    // list_print(self.trainUsers -> data[1].r);
+    list_print(self.trainUsers -> data[1].r);
 
     /* testUsers */
     userID = 0;
@@ -256,7 +268,7 @@ void populateUsers(model_t *selfp) {
         userID++;
         // printf("user: %d, lineNumber %d\n", userID, lineNumber);
     }
-    // list_print(self.testUsers -> data[1].r);
+    list_print(self.testUsers -> data[1].r);
     *selfp = self;
 }
 
