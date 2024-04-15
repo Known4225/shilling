@@ -676,7 +676,7 @@ char *unitype_to_string_truncated_doubles(unitype item, char type, int truncate)
             sprintf(ret, "%s", item.s);
         break;
         case 'p':
-            int size = snprintf(NULL, 0, "%p", item.p);
+            size = snprintf(NULL, 0, "%p", item.p);
             ret = malloc(size + 1);
             sprintf(ret, "%lf", item.p);
         break;

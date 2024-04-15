@@ -101,15 +101,39 @@ It's just that my test users aren't seeing the devastating results of the shilli
 Thats so weird. I'll do another investigation tomorrow
 
 Okay it's tomorrow.
-I ran some more tests and it seems like the SHILL_NAIVE_NUKE strategy is doing really great
+I ran some more tests and it seems like the SHILL_RANDOM_FILL_PUSH strategy is doing really great
 Let me make a quick table
 
-Shill Strategy             Algorithm      SHE (no shills)     SHE (with 100 shills)
-SHILL_NAIVE_PUSH           user-user           122                    122
-SHILL_RANDOM_FILL_PUSH     user-user           78                     105
-SHILL_TARGETED_FILL_PUSH   user-user           111                    139
-SHILL_BLEND_PUSH           user-user           89                     83
+Shill Strategy               Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
+SHILL_NAIVE_PUSH             user-user           122                    122                  1           NA           None
+SHILL_RANDOM_FILL_PUSH       user-user           78                     105                  1           NA           Correct
+SHILL_TARGETED_FILL_PUSH     user-user           111                    139                  1           NA           Opposite
+SHILL_RANDOM_BLEND_PUSH      user-user           532                    658                  1           NA           Correct
+SHILL_TARGETED_BLEND_PUSH    user-user           89                     83                   1           NA           Opposite
 
+SHILL_NAIVE_NUKE             user-user          1719                   1719                  NA          278          None
+SHILL_RANDOM_FILL_NUKE       user-user          1601                   1951                  NA          278          Opposite
+SHILL_TARGETED_FILL_NUKE     user-user          1866                   1652                  NA          278          Correct
+SHILL_RANDOM_BLEND_NUKE      user-user          1781                   1717                  NA          278          Correct
+SHILL_TARGETED_BLEND_NUKE    user-user          1723                   1625                  NA          278          Correct
+
+Okay so that wasn't quick...
+But I have some pretty good data
+I'm going to make one more table with srand set to a fixed value
+srand = 192834
+
+Shill Strategy               Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
+SHILL_NAIVE_PUSH             user-user           122                    122                  1           NA           None
+SHILL_RANDOM_FILL_PUSH       user-user           78                     105                  1           NA           Correct
+SHILL_TARGETED_FILL_PUSH     user-user           111                    139                  1           NA           Opposite
+SHILL_RANDOM_BLEND_PUSH      user-user           532                    658                  1           NA           Correct
+SHILL_TARGETED_BLEND_PUSH    user-user           89                     83                   1           NA           Opposite
+
+SHILL_NAIVE_NUKE             user-user          1719                   1719                  NA          278          None
+SHILL_RANDOM_FILL_NUKE       user-user          1601                   1951                  NA          278          Opposite
+SHILL_TARGETED_FILL_NUKE     user-user          1866                   1652                  NA          278          Correct
+SHILL_RANDOM_BLEND_NUKE      user-user          1781                   1717                  NA          278          Correct
+SHILL_TARGETED_BLEND_NUKE    user-user          1723                   1625                  NA          278          Correct
 */
 #include "include/csvParser.h"
 #include <math.h>
@@ -119,7 +143,14 @@ SHILL_BLEND_PUSH           user-user           89                     83
 #define SHILL_NAIVE_PUSH             1
 #define SHILL_RANDOM_FILL_PUSH       2
 #define SHILL_TARGETED_FILL_PUSH     3
-#define SHILL_BLEND_PUSH             4
+#define SHILL_RANDOM_BLEND_PUSH      4
+#define SHILL_TARGETED_BLEND_PUSH    5
+
+#define SHILL_NAIVE_NUKE             11
+#define SHILL_RANDOM_FILL_NUKE       12
+#define SHILL_TARGETED_FILL_NUKE     13
+#define SHILL_RANDOM_BLEND_NUKE      14
+#define SHILL_TARGETED_BLEND_NUKE    15
 
 /* prediction method macros */
 #define PREDICTION_USER_USER         1
@@ -148,10 +179,12 @@ typedef struct {
 
 
     int shillPush; // the ID of the movie that the shills are pushing
-    int shillPushFillAmount; // the number of movies that a nuke shill will rate 0/5
-    int shillBlendAmount; // the number of movies that a blen shill will rate 3/5
+    int shillPushFillAmount; // the number of movies that a push shill will rate 0/5
+    int shillPushBlendAmount; // the number of movies that a blend shill will rate 3/5
 
     int shillNuke; // the ID of the movie that the shills are nuking
+    int shillNukeFillAmount;
+    int shillNukeBlendAmount;
 } model_t;
 
 /* random functions */
@@ -165,9 +198,9 @@ extern inline double randomDouble(double lowerBound, double upperBound) { // ran
 /* loads the CSV files, initialises the lists, splits the train and test sets */
 void modelInit(model_t *selfp) {
     model_t self = *selfp;
-    srand(time(NULL)); // set random seed
+    srand(192834); // set random seed
     self.movies = parseTSVAllowInts("MovieLensData/movies.tsv");
-    printf("successfully loaded MovieLensData/movies.csv\n");
+    printf("successfully loaded MovieLensData/movies.tsv\n");
     self.internalMovieID = list_init();
     for (int i = 0; i < self.movies -> data[0].r -> length; i++) {
         list_append(self.internalMovieID, self.movies -> data[0].r -> data[i], 'i');
@@ -188,9 +221,11 @@ void modelInit(model_t *selfp) {
 
     self.shillPush = 1; // we are shilling for toy story
     self.shillPushFillAmount = 10; // default 10
-    self.shillBlendAmount = 10; // default 10
+    self.shillPushBlendAmount = 10; // default 10
 
     self.shillNuke = 278; // nuke shawshank redemption
+    self.shillNukeFillAmount = 10; // default 10
+    self.shillNukeBlendAmount = 10; // default is 10
 
     /* split train and test sets */
     self.testSize = self.trainRatings -> data[0].r -> length / 10; // the test size is 1/10 the ratings set
@@ -306,8 +341,26 @@ void printShillMessage(int numberOfShills, int shillStrategy) {
         case SHILL_TARGETED_FILL_PUSH:
             printf("\nGenerated %d shills with the SHILL_TARGETED_FILL_PUSH strategy\n", numberOfShills);
         break;
-        case SHILL_BLEND_PUSH:
-            printf("\nGenerated %d shills with the SHILL_BLEND_PUSH strategy\n", numberOfShills);
+        case SHILL_RANDOM_BLEND_PUSH:
+            printf("\nGenerated %d shills with the SHILL_RANDOM_BLEND_PUSH strategy\n", numberOfShills);
+        break;
+        case SHILL_TARGETED_BLEND_PUSH:
+            printf("\nGenerated %d shills with the SHILL_TARGETED_BLEND_PUSH strategy\n", numberOfShills);
+        break;
+        case SHILL_NAIVE_NUKE:
+            printf("\nGenerated %d shills with the SHILL_NAIVE_NUKE strategy\n", numberOfShills);
+        break;
+        case SHILL_RANDOM_FILL_NUKE:
+            printf("\nGenerated %d shills with the SHILL_RANDOM_FILL_NUKE strategy\n", numberOfShills);
+        break;
+        case SHILL_TARGETED_FILL_NUKE:
+            printf("\nGenerated %d shills with the SHILL_TARGETED_FILL_NUKE strategy\n", numberOfShills);
+        break;
+        case SHILL_RANDOM_BLEND_NUKE:
+            printf("\nGenerated %d shills with the SHILL_RANDOM_BLEND_NUKE strategy\n", numberOfShills);
+        break;
+        case SHILL_TARGETED_BLEND_NUKE:
+            printf("\nGenerated %d shills with the SHILL_TARGETED_BLEND_NUKE strategy\n", numberOfShills);
         break;
         default:
             printf("\nGenerated %d shills with an unknown shill strategy\n", numberOfShills);
@@ -331,8 +384,13 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillPush, 'i');
             list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
         }
+        if (shillStrategy == SHILL_NAIVE_NUKE) {
+            // the naive shill nuke only rates the self.shillNuke movie, and it rates it a 0/5
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillNuke, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+        }
         if (shillStrategy == SHILL_RANDOM_FILL_PUSH) {
-            // the random shill nuke rates the shilled movie a 5/5 and x other random movies a 0/5 (x is determined by self.shillPushFillAmount)
+            // the random shill push rates the shilled movie a 5/5 and x other random movies a 0/5 (x is determined by self.shillPushFillAmount)
             list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillPush, 'i');
             list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
             int randomMovie;
@@ -341,9 +399,24 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
                 while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
                     randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
                 }
-                // printf("shill %d nuking movie %d\n", i, randomMovie);
+                // printf("shill %d rating movie %d\n", i, randomMovie);
                 list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
                 list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+            }
+        }
+        if (shillStrategy == SHILL_RANDOM_FILL_NUKE) {
+            // the random shill nuke rates the nuked movie a 0/5 and x other random movies a 5/5 (x is determined by self.shillNukeFillAmount)
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillNuke, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+            int randomMovie;
+            for (int j = 0; j < self.shillNukeFillAmount; j++) {
+                randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+                while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
+                    randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+                }
+                // printf("shill %d rating movie %d\n", i, randomMovie);
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
             }
         }
         if (shillStrategy == SHILL_TARGETED_FILL_PUSH) {
@@ -386,8 +459,78 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_free(averageRank);
             list_free(numberOfRatings);
         }
-        if (shillStrategy == SHILL_BLEND_PUSH) {
-            // this shill will rate the shilled movie a 5/5 and the x top movies a 3/5 (x is determined by self.shillBlendAmount), top movies are decided by ARL
+        if (shillStrategy == SHILL_TARGETED_FILL_NUKE) {
+            // this shill will rate the nuked movie a 0/5 and the x top movies a 5/5 (x is determined by self.shillNukeFillAmount), top movies are decided by ARL
+            // we must assume that the self.ranked list is already filled out
+            if (self.ranked -> length == 0) {
+                printf("cannot execute SHILL_TARGETED_NUKE, must call rankMovies first\n");
+                return;
+            }
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillNuke, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+
+            list_t *topMovies = list_init();
+            list_t *averageRank = list_init();
+            list_t *numberOfRatings = list_init();
+            for (int k = 0; k < self.shillNukeFillAmount; k++) {
+                double maxAverageRank = -1;
+                int ratingsCount;
+                int topMovie;
+                for (int j = 1; j < self.ranked -> length; j++) {
+                    double compare = self.ranked -> data[j].r -> data[2].d * log(self.ranked -> data[j].r -> data[3].i + 1) / log(10);
+                    // printf("comapre: %lf\n", compare);
+                    if (j != self.shillNuke && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxAverageRank) {
+                        maxAverageRank = compare;
+                        topMovie = j;
+                        ratingsCount = self.ranked -> data[j].r -> data[3].i;
+                    }
+                }
+                list_append(topMovies, (unitype) topMovie, 'i');
+                list_append(averageRank, (unitype) maxAverageRank, 'd');
+                list_append(numberOfRatings, (unitype) ratingsCount, 'i');
+            }
+            for (int j = 0; j < self.shillNukeFillAmount; j++) {
+                // printf("shill %d nuking movie %d\n", i, convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i));
+                // printf("shill %d nuking movie %d\n", i, self.movies -> data[0].r -> data[topMovies -> data[j].i].i);
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i), 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
+            }
+            list_free(topMovies);
+            list_free(averageRank);
+            list_free(numberOfRatings);
+        }
+        if (shillStrategy == SHILL_RANDOM_BLEND_PUSH) {
+            // this shill will rate the shilled movie a 5/5 and x other random movies a 3/5 (x is determined by self.shillPushBlendAmount)
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillPush, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
+            int randomMovie;
+            for (int j = 0; j < self.shillPushBlendAmount; j++) {
+                randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+                while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
+                    randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+                }
+                // printf("shill %d rating movie %d\n", i, randomMovie);
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 3.0, 'd');
+            }
+        }
+        if (shillStrategy == SHILL_RANDOM_BLEND_NUKE) {
+            // this shill will rate the nuked movie a 0/5 and x other random movies a 3/5 (x is determined by self.shillNukeBlendAmount)
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillPush, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+            int randomMovie;
+            for (int j = 0; j < self.shillNukeBlendAmount; j++) {
+                randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+                while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
+                    randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+                }
+                // printf("shill %d rating movie %d\n", i, randomMovie);
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 3.0, 'd');
+            }
+        }
+        if (shillStrategy == SHILL_TARGETED_BLEND_PUSH) {
+            // this shill will rate the shilled movie a 5/5 and the x top movies a 3/5 (x is determined by self.shillPushBlendAmount), top movies are decided by ARL
             // we must assume that the self.ranked list is already filled out
             if (self.ranked -> length == 0) {
                 printf("cannot execute SHILL_BLEND_PUSH, must call rankMovies first\n");
@@ -399,7 +542,7 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_t *topMovies = list_init();
             list_t *averageRank = list_init();
             list_t *numberOfRatings = list_init();
-            for (int k = 0; k < self.shillBlendAmount; k++) {
+            for (int k = 0; k < self.shillPushBlendAmount; k++) {
                 double maxAverageRank = -1;
                 int ratingsCount;
                 int topMovie;
@@ -416,7 +559,47 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
                 list_append(averageRank, (unitype) maxAverageRank, 'd');
                 list_append(numberOfRatings, (unitype) ratingsCount, 'i');
             }
-            for (int j = 0; j < self.shillBlendAmount; j++) {
+            for (int j = 0; j < self.shillPushBlendAmount; j++) {
+                // printf("shill %d nuking movie %d\n", i, convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i));
+                // printf("shill %d nuking movie %d\n", i, self.movies -> data[0].r -> data[topMovies -> data[j].i].i);
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i), 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 3.0, 'd');
+            }
+            list_free(topMovies);
+            list_free(averageRank);
+            list_free(numberOfRatings);
+        }
+        if (shillStrategy == SHILL_TARGETED_BLEND_NUKE) {
+            // this shill will rate the nuked movie a 0/5 and the x top movies a 3/5 (x is determined by self.shillNukeBlendAmount), top movies are decided by ARL
+            // we must assume that the self.ranked list is already filled out
+            if (self.ranked -> length == 0) {
+                printf("cannot execute SHILL_BLEND_PUSH, must call rankMovies first\n");
+                return;
+            }
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillNuke, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+
+            list_t *topMovies = list_init();
+            list_t *averageRank = list_init();
+            list_t *numberOfRatings = list_init();
+            for (int k = 0; k < self.shillNukeBlendAmount; k++) {
+                double maxAverageRank = -1;
+                int ratingsCount;
+                int topMovie;
+                for (int j = 1; j < self.ranked -> length; j++) {
+                    double compare = self.ranked -> data[j].r -> data[2].d * log(self.ranked -> data[j].r -> data[3].i + 1) / log(10);
+                    // printf("comapre: %lf\n", compare);
+                    if (j != self.shillNuke && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxAverageRank) {
+                        maxAverageRank = compare;
+                        topMovie = j;
+                        ratingsCount = self.ranked -> data[j].r -> data[3].i;
+                    }
+                }
+                list_append(topMovies, (unitype) topMovie, 'i');
+                list_append(averageRank, (unitype) maxAverageRank, 'd');
+                list_append(numberOfRatings, (unitype) ratingsCount, 'i');
+            }
+            for (int j = 0; j < self.shillNukeBlendAmount; j++) {
                 // printf("shill %d nuking movie %d\n", i, convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i));
                 // printf("shill %d nuking movie %d\n", i, self.movies -> data[0].r -> data[topMovies -> data[j].i].i);
                 list_append(self.shills -> data[i].r -> data[1].r, (unitype) convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i), 'i');
@@ -769,7 +952,7 @@ double ndcg(model_t *selfp, int atK) {
 }
 
 /* the SHE (shill effectiveness) metric counts the number of times that the shilled item appears in test users recommendation list of size topX */
-int SHE(model_t *selfp, int topX) {
+int SHE(model_t *selfp, int topX, char pushOrNuke) {
     model_t self = *selfp;
     int result = 0;
     /* for each test user */
@@ -790,7 +973,12 @@ int SHE(model_t *selfp, int topX) {
         }
         // list_print(recList);
         /* check if/where shilled item is in recommendation list */
-        int position = list_find(recList, (unitype) self.shillPush, 'i');
+        int position;
+        if (pushOrNuke) {
+            position = list_find(recList, (unitype) self.shillNuke, 'i');
+        } else {
+            position = list_find(recList, (unitype) self.shillPush, 'i');
+        }
         if (position > -1) {
             result += topX - position;
         }
@@ -820,7 +1008,8 @@ int main(int argc, char  *argv[]) {
     /* evaluate */
     printf("\nMAE Evaluation (No Shills): %lf\n", MAE(&self));
     printf("RMSE Evaluation (No Shills): %lf\n", RMSE(&self));
-    printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10));
+    // printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
+    printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
     /* rank movies */
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (No Shills):\n");
@@ -829,9 +1018,16 @@ int main(int argc, char  *argv[]) {
     list_copy(noShillRankings, self.ranked);
     /* generate shills */
     // populateShills(&self, 100, SHILL_NAIVE_PUSH); // 140 shills are needed at minimum to get toy story to the top
-    populateShills(&self, 100, SHILL_RANDOM_FILL_PUSH); // 140 shills are a maximum guarentee, it could be less based on random chance (with shillPushFillAmount = 10)
+    // populateShills(&self, 100, SHILL_RANDOM_FILL_PUSH); // 140 shills are a maximum guarentee, it could be less based on random chance (with shillPushFillAmount = 10)
     // populateShills(&self, 100, SHILL_TARGETED_FILL_PUSH); // just 46 targeted nuke shills are enough to get toy story to the top (with shillPushFillAmount = 10)
-    // populateShills(&self, 100, SHILL_BLEND_PUSH); // idk
+    // populateShills(&self, 100, SHILL_RANDOM_BLEND_PUSH);
+    // populateShills(&self, 100, SHILL_TARGETED_BLEND_PUSH);
+
+    // populateShills(&self, 100, SHILL_NAIVE_NUKE);
+    // populateShills(&self, 100, SHILL_RANDOM_FILL_NUKE);
+    // populateShills(&self, 100, SHILL_TARGETED_FILL_NUKE);
+    // populateShills(&self, 100, SHILL_RANDOM_BLEND_NUKE);
+    // populateShills(&self, 100, SHILL_TARGETED_BLEND_NUKE);
     /* combine users and shills */
     combineUsersAndShills(&self);
     /* generate predictions */
@@ -840,7 +1036,8 @@ int main(int argc, char  *argv[]) {
     /* evaluate */
     printf("\nMAE Evaluation (After Shills): %lf\n", MAE(&self));
     printf("RMSE Evaluation (After Shills): %lf\n", RMSE(&self));
-    printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10));
+    // printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
+    printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
     /* rank movies */
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (After Shills):\n");
