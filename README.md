@@ -13,7 +13,14 @@ or
 Or on linux:
 > ./shilling.o
 
+## Recommendation Algorithms
+ - User-user
+ - Item-item
+ - SVD
+
 ## Metrics
+ - MAE
  - RMSE
- - Something else
- - Another one!
+ - NDCG
+ - ARL
+ - SHE
