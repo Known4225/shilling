@@ -76,7 +76,7 @@ SHILL_RANDOM - the random shill rates the pushed/nuked item as well as x other r
 SHILL_LOVE_HATE - the love/hate shill rates the pushed/nuked item as well as x other random items. In the case of a push shill the random items are rated 0/5 and in the case of a nuke 5/5, x is determined by shillRandomAmount
 SHILL_BANDWAGON - the bandwagon shill rates the pushed/nuked item as well as y + x other items. The top y items (top determined by ARL, y set by shillPopularAmount) are rated 5/5 and the other x items are rated randomly, x is determined by shillRandomAmount
 SHILL_POPULAR - the popular shill rates the pushed/nuked item as well as y + x other items. The top y items (top determined by ARL, y set by shillPopularAmount) as well as the next top x items are rated either 0/5 or 1/5 depending on whether the average for that item is above or below the total average
-SHILL_REVERSE_BANDWAGON - the reverse bandwagon shill rates the nuked item as well as z other items. All z items are rated 0/5, z items are ranked by taking the number of votes divided by the average rating squared.
+SHILL_REVERSE_BANDWAGON - the reverse bandwagon shill rates the nuked item as well as z other items. All z items are rated 0/5, z items are ranked by taking the number of votes divided by the average rating squared. z is determined by shillRandomAmount
 SHILL_PROBE - the probe shill first rates n items randomly (n determined by shillProbeAmount). It then uses recommendation predictions to rate x items (rates them the predicted score ± 0.1). It then rates the push/nuked item.
 SHILL_SEGMENT - the segment shill is not implemented
 
@@ -480,19 +480,19 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
                 list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) (double) (self.globalAverageRating + randomDouble(-1, 1)), 'd');
             }
             for (int k = 0; k < self.shillPushPopularAmount; k++) {
-                double maxAverageRank = -1;
+                double maxARL = -1;
                 int ratingsCount;
                 int topMovie;
                 for (int j = 1; j < self.ranked -> length; j++) {
                     double compare = self.ranked -> data[j].r -> data[2].d * log(self.ranked -> data[j].r -> data[3].i + 1) / log(10);
-                    if (j != self.shillPush && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxAverageRank) {
-                        maxAverageRank = compare;
+                    if (j != self.shillPush && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxARL) {
+                        maxARL = compare;
                         topMovie = j;
                         ratingsCount = self.ranked -> data[j].r -> data[3].i;
                     }
                 }
                 list_append(topMovies, (unitype) topMovie, 'i');
-                list_append(averageRank, (unitype) maxAverageRank, 'd');
+                list_append(averageRank, (unitype) maxARL, 'd');
                 list_append(numberOfRatings, (unitype) ratingsCount, 'i');
             }
             for (int j = 0; j < self.shillPushPopularAmount; j++) {
@@ -526,19 +526,19 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
                 list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) (double) (self.globalAverageRating + randomDouble(-1, 1)), 'd');
             }
             for (int k = 0; k < self.shillNukePopularAmount; k++) {
-                double maxAverageRank = -1;
+                double maxARL = -1;
                 int ratingsCount;
                 int topMovie;
                 for (int j = 1; j < self.ranked -> length; j++) {
                     double compare = self.ranked -> data[j].r -> data[2].d * log(self.ranked -> data[j].r -> data[3].i + 1) / log(10);
-                    if (j != self.shillNuke && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxAverageRank) {
-                        maxAverageRank = compare;
+                    if (j != self.shillNuke && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxARL) {
+                        maxARL = compare;
                         topMovie = j;
                         ratingsCount = self.ranked -> data[j].r -> data[3].i;
                     }
                 }
                 list_append(topMovies, (unitype) topMovie, 'i');
-                list_append(averageRank, (unitype) maxAverageRank, 'd');
+                list_append(averageRank, (unitype) maxARL, 'd');
                 list_append(numberOfRatings, (unitype) ratingsCount, 'i');
             }
             for (int j = 0; j < self.shillNukePopularAmount; j++) {
@@ -562,19 +562,19 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_t *averageRank = list_init();
             list_t *numberOfRatings = list_init();
             for (int k = 0; k < self.shillPushPopularAmount + self.shillPushRandomAmount; k++) {
-                double maxAverageRank = -1;
+                double maxARL = -1;
                 int ratingsCount;
                 int topMovie;
                 for (int j = 1; j < self.ranked -> length; j++) {
                     double compare = self.ranked -> data[j].r -> data[2].d * log(self.ranked -> data[j].r -> data[3].i + 1) / log(10);
-                    if (j != self.shillPush && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxAverageRank) {
-                        maxAverageRank = compare;
+                    if (j != self.shillPush && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxARL) {
+                        maxARL = compare;
                         topMovie = j;
                         ratingsCount = self.ranked -> data[j].r -> data[3].i;
                     }
                 }
                 list_append(topMovies, (unitype) topMovie, 'i');
-                list_append(averageRank, (unitype) maxAverageRank, 'd');
+                list_append(averageRank, (unitype) maxARL, 'd');
                 list_append(numberOfRatings, (unitype) ratingsCount, 'i');
             }
             for (int j = 0; j < self.shillPushPopularAmount + self.shillPushRandomAmount; j++) {
@@ -590,10 +590,10 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_free(averageRank);
             list_free(numberOfRatings);
         } else if (shillStrategy == SHILL_POPULAR_NUKE) {
-            // the popular push rates the pushed item a 5/5 as y + x other items. The top y items (top determined by ARL, y set by shillPopularAmount) as well as the next top x random items are rated either 0/5 or 1/5 depending on whether the average for that item is above or below the total average
+            // the reverse bandwagon nuke rates the nuked item a 0/5 as y + x other items. The top y items (top determined by ARL, y set by shillPopularAmount) as well as the next top x random items are rated either 0/5 or 1/5 depending on whether the average for that item is above or below the total average
             // rankMovies must be called prior to populateShills to determine ARL positions
             if (self.ranked -> length == 0) {
-                printf("cannot execute SHILL_POPULAR_PUSH, must call rankMovies first\n");
+                printf("cannot execute SHILL_POPULAR_NUKE, must call rankMovies first\n");
                 return;
             }
             list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillNuke, 'i');
@@ -603,19 +603,19 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_t *averageRank = list_init();
             list_t *numberOfRatings = list_init();
             for (int k = 0; k < self.shillNukePopularAmount + self.shillNukeRandomAmount; k++) {
-                double maxAverageRank = -1;
+                double maxARL = -1;
                 int ratingsCount;
                 int topMovie;
                 for (int j = 1; j < self.ranked -> length; j++) {
                     double compare = self.ranked -> data[j].r -> data[2].d * log(self.ranked -> data[j].r -> data[3].i + 1) / log(10);
-                    if (j != self.shillNuke && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxAverageRank) {
-                        maxAverageRank = compare;
+                    if (j != self.shillNuke && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxARL) {
+                        maxARL = compare;
                         topMovie = j;
                         ratingsCount = self.ranked -> data[j].r -> data[3].i;
                     }
                 }
                 list_append(topMovies, (unitype) topMovie, 'i');
-                list_append(averageRank, (unitype) maxAverageRank, 'd');
+                list_append(averageRank, (unitype) maxARL, 'd');
                 list_append(numberOfRatings, (unitype) ratingsCount, 'i');
             }
             for (int j = 0; j < self.shillNukePopularAmount + self.shillNukeRandomAmount; j++) {
@@ -630,8 +630,59 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_free(topMovies);
             list_free(averageRank);
             list_free(numberOfRatings);
+        } else if (shillStrategy == SHILL_REVERSE_BANDWAGON_PUSH) {
+            printf("Error: tried to execute SHILL_REVERSE_BANDWAGON_PUSH, the REVERSE_BANDWAGON strategy only works for nuking items\n");
+        } else if (shillStrategy == SHILL_REVERSE_BANDWAGON_NUKE) {
+            // the reverse bandwagon nuke rates the nuked item a 0/5 as z other items. All z items are rated 0/5, z items are ranked by taking the number of votes divided by the average rating squared. z is determined by shillRandomAmount
+            // rankMovies must be called prior to populateShills to determine ARL positions
+            if (self.ranked -> length == 0) {
+                printf("cannot execute SHILL_REVERSE_BANDWAGON_NUKE, must call rankMovies first\n");
+                return;
+            }
+            list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillNuke, 'i');
+            list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+
+            list_t *topMovies = list_init();
+            list_t *averageRank = list_init();
+            list_t *numberOfRatings = list_init();
+            for (int k = 0; k < self.shillNukeRandomAmount; k++) {
+                double maxReverseBandwagon = -1;
+                int ratingsCount;
+                int topMovie;
+                for (int j = 1; j < self.ranked -> length; j++) {
+                    double compare = self.ranked -> data[j].r -> data[3].i / (self.ranked -> data[j].r -> data[2].d * self.ranked -> data[j].r -> data[2].d);
+                    if (j != self.shillNuke && list_count(topMovies, (unitype) j, 'i') == 0 && compare > maxReverseBandwagon) {
+                        maxReverseBandwagon = compare;
+                        topMovie = j;
+                        ratingsCount = self.ranked -> data[j].r -> data[3].i;
+                    }
+                }
+                list_append(topMovies, (unitype) topMovie, 'i');
+                list_append(averageRank, (unitype) maxReverseBandwagon, 'd');
+                list_append(numberOfRatings, (unitype) ratingsCount, 'i');
+            }
+            for (int j = 0; j < self.shillNukeRandomAmount; j++) {
+                int movieID = convertToInternalMovieID(selfp, self.movies -> data[0].r -> data[topMovies -> data[j].i].i);
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) movieID, 'i');
+                if (self.ranked -> data[movieID].r -> data[2].d > self.globalAverageRating) {
+                    list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 1.0, 'd');
+                } else {
+                    list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
+                }
+            }
+            list_free(topMovies);
+            list_free(averageRank);
+            list_free(numberOfRatings);
+        } else if (shillStrategy == SHILL_PROBE_PUSH) {
+            // the probe push first rates n items randomly (n determined by shillProbeAmount). It then uses recommendation predictions to rate x items (rates them the predicted score ± 0.1). It then rates the pushed item.
+            // generatePredictions followed by populateShillsExtra() must be called after populateShills to complete this shill strategy
+
+        } else if (shillStrategy == SHILL_PROBE_NUKE) {
+            // the probe nuke first rates n items randomly (n determined by shillProbeAmount). It then uses recommendation predictions to rate x items (rates them the predicted score ± 0.1). It then rates the nuked item.
+            // generatePredictions followed by populateShillsExtra() must be called after populateShills to complete this shill strategy
+            
         } else {
-            printf("Error: shill strategy not recognised\n");
+            printf("Error: shillStrategy not recognised\n");
         }
         shillID++;
     }
@@ -724,20 +775,20 @@ void displayTopMovies(model_t *selfp, list_t *rankList, int topX) {
     list_t *numberOfRatings = list_init();
     // list_print(rankList -> data[278].r);
     for (int j = 0; j < topX; j++) {
-        double maxAverageRank = -1;
+        double maxARL = -1;
         int ratingsCount;
         int topMovie;
         for (int i = 1; i < rankList -> length; i++) {
             double compare = rankList -> data[i].r -> data[2].d * log(rankList -> data[i].r -> data[3].i + 1) / log(10);
-            if (list_count(topMovies, (unitype) i, 'i') == 0 && compare > maxAverageRank) {
+            if (list_count(topMovies, (unitype) i, 'i') == 0 && compare > maxARL) {
                 // printf("compare: %d %lf %lf %d\n", i, compare, rankList -> data[i].r -> data[2].d, rankList -> data[i].r -> data[3].i);
-                maxAverageRank = compare;
+                maxARL = compare;
                 topMovie = i;
                 ratingsCount = rankList -> data[i].r -> data[3].i;
             }
         }
         list_append(topMovies, (unitype) topMovie, 'i');
-        list_append(averageRank, (unitype) maxAverageRank, 'd');
+        list_append(averageRank, (unitype) maxARL, 'd');
         list_append(numberOfRatings, (unitype) ratingsCount, 'i');
     }
     for (int i = 0; i < topX; i++) {
