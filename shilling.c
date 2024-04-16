@@ -19,6 +19,29 @@ And two special made up metric:
 
 Notes/Results:
 
+Testing with:
+ - Fixed randomness (using randPredictive with predSrand = 1)
+ - shillPush = 1
+ - shillNuke = 278
+ - shillRandomAmount, shillPopularAmount = 10
+ - shillProbeAmount = 3
+
+Shill Strategy                  Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
+SHILL_NAIVE_PUSH                user-user           122                    122                  1           NA           None
+SHILL_RANDOM_PUSH               user-user           122                    167                  1           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user           122                    142                  1           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user           122                    167                  1           NA           Correct
+SHILL_POPULAR_PUSH              user-user           122                     85                  1           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user           NA                      NA                  NA          NA           NA
+SHILL_PROBE_PUSH                user-user           NA                      NA                  NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user           633                    633                  NA          278          None
+SHILL_RANDOM_NUKE               user-user           633                    785                  NA          278          Opposite
+SHILL_LOVE_HATE_NUKE            user-user           633                    544                  NA          278          Correct
+SHILL_BANDWAGON_NUKE            user-user           633                    598                  NA          278          Correct
+SHILL_POPULAR_NUKE              user-user           633                    600                  NA          278          Correct
+SHILL_REVERSE_BANDWAGON_PUSH    user-user           NA                      NA                  NA          NA           NA
+SHILL_PROBE_PUSH                user-user           NA                      NA                  NA          NA           NA
 */
 #include "include/csvParser.h"
 #include <math.h>
@@ -95,7 +118,7 @@ typedef struct {
 } model_t;
 
 /* random functions */
-unsigned long predSrand = 1;
+unsigned long predSrand = 1; // starting value for randPredictive
 int randPredictive(void) { // https://stackoverflow.com/questions/65980429/same-srand-seeds-produces-different-values-on-different-computers
     predSrand = predSrand * 1103515245 + 12345;
     return (unsigned int) (predSrand / 65536) % 32768;
@@ -198,17 +221,37 @@ void modelInit(model_t *selfp) {
     *selfp = self;
 }
 
-void model_free(model_t *selfp) {
+void model_free(model_t *selfp, char debug) {
     list_free(selfp -> movies);
+    if (debug)
+        printf("freed movies\n");
     list_free(selfp -> trainRatings);
+    if (debug)
+        printf("freed trainRatings\n");
     list_free(selfp -> testRatings);
+    if (debug)
+        printf("freed testRatings\n");
     list_free(selfp -> internalMovieID);
+    if (debug)
+        printf("freed internalMovieID\n");
     list_free(selfp -> trainUsers);
+    if (debug)
+        printf("freed trainUsers\n");
     list_free(selfp -> testUsers);
+    if (debug)
+        printf("freed testUsers\n");
     list_free(selfp -> shills);
+    if (debug)
+        printf("freed shills\n");
     list_free(selfp -> userReference);
+    if (debug)
+        printf("freed userReference\n");
     list_free(selfp -> predictions);
+    if (debug)
+        printf("freed predictions\n");
     list_free(selfp -> ranked);
+    if (debug)
+        printf("freed ranked\n");
 }
 
 int convertToInternalMovieID(model_t *selfp, int movieID) {
@@ -970,7 +1013,7 @@ int SHE(model_t *selfp, int topX, char pushOrNuke) {
     return result;
 }
 
-void runSingularTest(int numberOfShills, int shillStrategy) {
+void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy) {
     model_t self;
     modelInit(&self);
     /* identify users */
@@ -991,12 +1034,12 @@ void runSingularTest(int numberOfShills, int shillStrategy) {
     displayTopMovies(&self, self.ranked, 10);
     // printf("global average rating: %lf\n", self.globalAverageRating);
     /* generate shills */
-    populateShills(&self, 100, SHILL_POPULAR_NUKE);
+    populateShills(&self, 100, shillStrategy);
     /* combine users and shills */
     combineUsersAndShills(&self);
     /* generate predictions */
     generateUserReferenceCache(&self); // cached for speed
-    generatePredictions(&self, PREDICTION_USER_USER);
+    generatePredictions(&self, predictionMethod);
     /* evaluate */
     printf("\nMAE Evaluation (After Shills): %lf\n", MAE(&self));
     printf("RMSE Evaluation (After Shills): %lf\n", RMSE(&self));
@@ -1009,24 +1052,26 @@ void runSingularTest(int numberOfShills, int shillStrategy) {
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (After Shills):\n");
     displayTopMovies(&self, self.ranked, 10);
-    model_free(&self);
+    model_free(&self, 0);
+    // reset randomness
+    predSrand = 1;
 }
 
 int main(int argc, char  *argv[]) {
     /* run push shills */
-    runSingularTest(100, SHILL_NAIVE_PUSH);
-    runSingularTest(100, SHILL_RANDOM_PUSH);
-    runSingularTest(100, SHILL_LOVE_HATE_PUSH);
-    runSingularTest(100, SHILL_BANDWAGON_PUSH);
-    runSingularTest(100, SHILL_POPULAR_PUSH);
-    runSingularTest(100, SHILL_PROBE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_NAIVE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_RANDOM_PUSH);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_LOVE_HATE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_BANDWAGON_PUSH);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_POPULAR_PUSH);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_PROBE_PUSH);
 
     /* run nuke shills */
-    runSingularTest(100, SHILL_NAIVE_NUKE);
-    runSingularTest(100, SHILL_RANDOM_NUKE);
-    runSingularTest(100, SHILL_LOVE_HATE_NUKE);
-    runSingularTest(100, SHILL_BANDWAGON_NUKE);
-    runSingularTest(100, SHILL_POPULAR_NUKE);
-    runSingularTest(100, SHILL_REVERSE_BANDWAGON_NUKE);
-    runSingularTest(100, SHILL_PROBE_NUKE);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_NAIVE_NUKE);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_RANDOM_NUKE);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_LOVE_HATE_NUKE);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_BANDWAGON_NUKE);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_POPULAR_NUKE);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_REVERSE_BANDWAGON_NUKE);
+    runSingularTest(PREDICTION_USER_USER, 100, SHILL_PROBE_NUKE);
 }
