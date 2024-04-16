@@ -65,8 +65,8 @@ list_free(list);
 
 struct list_f; // so basically im a good programmer
 typedef struct list_f list_t;
-
-typedef union { // supported types
+/* supported types */
+typedef union {
     int i;
     unsigned int u;
     float f;
@@ -86,8 +86,8 @@ struct list_f {
     char *type;
     unitype *data;
 };
-
-list_t* list_init() { // initialise a list
+/* initialise a list */
+list_t* list_init() {
     list_t *list = malloc(sizeof(list_t));
     list -> length = 0;
     list -> realLength = 1;
@@ -95,8 +95,8 @@ list_t* list_init() { // initialise a list
     list -> data = calloc(1, sizeof(unitype));
     return list;
 }
-
-void* list_item(list_t *list, int index) { // accesses an item of the list as a void pointer
+/* accesses an item of the list as a void pointer */
+void* list_item(list_t *list, int index) {
     void *ret;
     switch (list -> type[index]) {
         case 'i':
@@ -139,12 +139,14 @@ void* list_item(list_t *list, int index) { // accesses an item of the list as a 
     }
     return ret;
 }
-
+/* forward declarations */
 void list_free_lite(list_t *);
 void list_free(list_t *);
+void list_free_debug(list_t *);
 void list_print_emb(list_t *);
-
-void list_append(list_t *list, unitype data, char type) { // append to list, must specify type
+int unitype_check_equal (unitype, unitype, char, char);
+/* append to list, must specify type */
+void list_append(list_t *list, unitype data, char type) {
     if (list -> realLength  <= list -> length) {
         list -> realLength *= 2;
         list -> type = realloc(list -> type, list -> realLength);
@@ -158,7 +160,7 @@ void list_append(list_t *list, unitype data, char type) { // append to list, mus
     }
     list -> length += 1;
 }
-
+/* deletes the contents of a list */
 void list_clear(list_t *list) {
     list_free_lite(list);
     list -> length = 0;
@@ -166,8 +168,8 @@ void list_clear(list_t *list) {
     list -> type = calloc(1, sizeof(char));
     list -> data = calloc(1, sizeof(unitype));
 }
-
-unitype list_pop(list_t *list) { // pops the last item of the list off and returns it
+/* pops the last item of the list off and returns it */
+unitype list_pop(list_t *list) {
     if (list -> length > 0) {
         list -> length -= 1;
         unitype ret = list -> data[list -> length];
@@ -189,8 +191,8 @@ unitype list_pop(list_t *list) { // pops the last item of the list off and retur
         return (unitype) 0;
     }
 }
-
-unitype list_delete(list_t *list, int index) { // deletes the item at list[index] of the list and returns it
+/* deletes the item at list[index] of the list and returns it */
+unitype list_delete(list_t *list, int index) {
     while (index < 0) {index += list -> length;}
     index %= list -> length;
     unitype ret = list -> data[index];
@@ -214,8 +216,8 @@ unitype list_delete(list_t *list, int index) { // deletes the item at list[index
     }
     return ret;
 }
-
-void list_delete_range(list_t* list, int indexMin, int indexMax) { // deletes many items from the list spanning from [indexMin] to [indexMax - 1]
+/* deletes many items from the list spanning from [indexMin] to [indexMax - 1] */
+void list_delete_range(list_t* list, int indexMin, int indexMax) {
     if (indexMin > indexMax) {
         int swap = indexMin;
         indexMin = indexMax;
@@ -248,7 +250,20 @@ void list_delete_range(list_t* list, int indexMin, int indexMax) { // deletes ma
     list -> data = newData;
 }
 
-int unitype_check_equal (unitype item1, unitype item2, char typeItem1, char typeItem2) { // checks if two unitype items are equal
+/* checks if the contents of two lists are equal */
+int list_check_equal(list_t *list1, list_t *list2) {
+    if (list1 -> length != list2 -> length) {
+        return 0;
+    }
+    for (int i = 0; i < list1 -> length; i++) {
+        if (unitype_check_equal(list1 -> data[i], list2 -> data[i], list1 -> type[i], list2 -> type[i]) == 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+/* checks if two unitype items are equal */
+int unitype_check_equal (unitype item1, unitype item2, char typeItem1, char typeItem2) {
     if ((typeItem1 == 's' || typeItem2 == 's') && typeItem1 != typeItem2) { // logical xor but idk how to do it
         return 0;
     }
@@ -266,17 +281,16 @@ int unitype_check_equal (unitype item1, unitype item2, char typeItem1, char type
             if (item1.d == item2.d) {return 1;}
         break;
         case 'c':
-            if (item1.c == item2.c) {return 1;} // BROKEN (???) in some gcc settings on certain computer (???)
-            // if (strcmp(&item1.c, &item2.c) == 0) {return 1;}
+            if (item1.c == item2.c) {return 1;}
         break;
         case 's':
             if (strcmp(item1.s, item2.s) == 0) {return 1;}
         break;
         case 'p':
-            if (item1.p == item2.p) {return 1;} // questionable
+            if (item1.p == item2.p) {return 1;} // checks pointer value
         break;
         case 'r':
-            if (item1.r == item2.r) {return 1;} // questionable^2 (doesn't check if lists are equivalent/congruent, just compares memory location)
+            return list_check_equal(item1.r, item2.r);
         break;
         case 'l':
             if (item1.l == item2.l) {return 1;}
@@ -385,8 +399,8 @@ int list_search_binary(list_t *list, int item) {
     }
     return -1;
 }
-
-int list_count(list_t *list, unitype item, char type) { // counts how many instances of an item is found in the list
+/* counts how many instances of an item is found in the list */
+int list_count(list_t *list, unitype item, char type) {
     int count = 0;
     for (int i = 0; i < list -> length; i++) {
         count += unitype_check_equal(list -> data[i], item, list -> type[i], type);
@@ -733,8 +747,8 @@ void list_copy(list_t *dest, list_t *src) {
         }
     }
 }
-
-void list_print(list_t *list) { // prints the list (like python would)
+/* prints the list */
+void list_print(list_t *list) {
     printf("[");
     if (list -> length == 0) {
         printf("]\n");
@@ -749,8 +763,8 @@ void list_print(list_t *list) { // prints the list (like python would)
         }
     }
 }
-
-void list_print_emb(list_t *list) { // prints the list but without closing \n
+/* prints the list but without the closing \n */
+void list_print_emb(list_t *list) {
     printf("[");
     if (list -> length == 0) {
         printf("]");
@@ -765,8 +779,8 @@ void list_print_emb(list_t *list) { // prints the list but without closing \n
         }
     }
 }
-
-void list_print_type(list_t *list) { // prints the types of the list
+/* prints the types of the list */
+void list_print_type(list_t *list) {
     printf("[");
     if (list -> length == 0) {
         printf("]\n");
@@ -781,8 +795,8 @@ void list_print_type(list_t *list) { // prints the types of the list
         }
     }
 }
-
-void list_free_lite(list_t *list) { // frees the list's data but not the list itself
+/* frees the list's data but not the list itself */
+void list_free_lite(list_t *list) {
     for (int i = 0; i < list -> length; i++) {
         if (list -> type[i] == 'r') {
             list_free(list -> data[i].r);
@@ -794,8 +808,30 @@ void list_free_lite(list_t *list) { // frees the list's data but not the list it
     free(list -> type);
     free(list -> data);
 }
-
-void list_free(list_t *list) { // frees the data used by the list
+/* do runtime type checks */
+void list_free_lite_debug(list_t *list) {
+    for (int i = 0; i < list -> length; i++) {
+        if (list -> type[i] != 'i' && list -> type[i] != 'u' && list -> type[i] != 'f' && list -> type[i] != 'd' && list -> type[i] != 'c' && list -> type[i] != 's' && 
+        list -> type[i] != 'p' && list -> type[i] != 'r' && list -> type[i] != 'l' && list -> type[i] != 'h' && list -> type[i] != 'b') {
+            printf("bad bad bad %c %d\n", list -> type[i], list -> type[i]);
+        }
+        if (list -> type[i] == 'r') {
+            list_free_debug(list -> data[i].r);
+        }
+        if (list -> type[i] == 's' || list -> type[i] == 'p') {
+            free(list -> data[i].s);
+        }
+    }
+    free(list -> type);
+    free(list -> data);
+}
+/* frees the data used by the list and the list itself */
+void list_free(list_t *list) {
     list_free_lite(list);
+    free(list);
+}
+/* do runtime type checks */
+void list_free_debug(list_t *list) {
+    list_free_lite_debug(list);
     free(list);
 }

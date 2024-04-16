@@ -240,7 +240,7 @@ void model_free(model_t *selfp, char debug) {
     list_free(selfp -> testUsers);
     if (debug)
         printf("freed testUsers\n");
-    list_free(selfp -> shills);
+    list_free_debug(selfp -> shills);
     if (debug)
         printf("freed shills\n");
     list_free(selfp -> userReference);
@@ -641,7 +641,10 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
 void combineUsersAndShills(model_t *selfp) {
     model_t self = *selfp;
     for (int i = 0; i < self.shills -> length; i++) {
-        list_append(self.trainUsers, (unitype) self.shills -> data[i].r, 'r');
+        /* MUST COPY TO AVOID DOUBLE FREE */
+        list_t *copied = list_init();
+        list_copy(copied, self.shills -> data[i].r);
+        list_append(self.trainUsers, (unitype) copied, 'r');
     }
     *selfp = self;
 }
@@ -1052,7 +1055,7 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (After Shills):\n");
     displayTopMovies(&self, self.ranked, 10);
-    model_free(&self, 0);
+    model_free(&self, 1);
     // reset randomness
     predSrand = 1;
 }
