@@ -150,7 +150,7 @@ void packageAllTypes(list_t *csvList, char *filename, char CSVOrTSV, int truncat
                 return;
             }
             if (lineBufferIndex > MAX_LINE_SIZE) {
-                printf("packageAllTypes: line %d exceeds maximum line size\n");
+                printf("packageAllTypes: line %d exceeds maximum line size\n", lineNumber);
             }
             strcpy(lineBuffer + lineBufferIndex, element);
             lineBufferIndex += strlen(element);
@@ -170,7 +170,7 @@ void packageAllTypes(list_t *csvList, char *filename, char CSVOrTSV, int truncat
             return;
         }
         if (lineBufferIndex > MAX_LINE_SIZE) {
-            printf("packageAllTypes: line %d exceeds maximum line size\n");
+            printf("packageAllTypes: line %d exceeds maximum line size\n", lineNumber);
         }
         strcpy(lineBuffer + lineBufferIndex, element);
         fprintf(fptr, "%s\n", lineBuffer);

@@ -489,7 +489,7 @@ void unitype_to_string(unitype item, char type) {
         case 'p':
             size = snprintf(NULL, 0, "%p", item.p);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.p);
+            sprintf(ret, "%p", item.p);
         break;
         case 'r':
             /* this is a fun project to do... for another time */
@@ -498,17 +498,17 @@ void unitype_to_string(unitype item, char type) {
         case 'l':
             size = snprintf(NULL, 0, "%lld", item.l);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.l);
+            sprintf(ret, "%lld", item.l);
         break;
         case 'h':
             size = snprintf(NULL, 0, "%hi", item.h);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.h);
+            sprintf(ret, "%hi", item.h);
         break;
         case 'b':
             size = snprintf(NULL, 0, "%hi", item.b);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.b);
+            sprintf(ret, "%hi", item.b);
         break;
         default:
             printf("unitype_to_string: type not recognized\n");
@@ -678,7 +678,7 @@ char *unitype_to_string_truncated_doubles(unitype item, char type, int truncate)
         case 'p':
             size = snprintf(NULL, 0, "%p", item.p);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.p);
+            sprintf(ret, "%p", item.p);
         break;
         case 'r':
             /* this is a fun project to do... for another time */
@@ -687,17 +687,17 @@ char *unitype_to_string_truncated_doubles(unitype item, char type, int truncate)
         case 'l':
             size = snprintf(NULL, 0, "%lld", item.l);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.l);
+            sprintf(ret, "%lld", item.l);
         break;
         case 'h':
             size = snprintf(NULL, 0, "%hi", item.h);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.h);
+            sprintf(ret, "%hi", item.h);
         break;
         case 'b':
             size = snprintf(NULL, 0, "%hi", item.b);
             ret = malloc(size + 1);
-            sprintf(ret, "%lf", item.b);
+            sprintf(ret, "%hi", item.b);
         break;
         default:
             printf("unitype_to_string_truncated_doubles: type not recognized\n");

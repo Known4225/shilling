@@ -360,7 +360,7 @@ void printShillMessage(int numberOfShills, int shillStrategy) {
             printf("\nGenerated %d shills with the SHILL_SEGMENT_NUKE strategy\n", numberOfShills);
         break;
         default:
-            printf("\nError: unknown shill strategy\n", numberOfShills);
+            printf("\nError: unknown shill strategy\n");
         break;
     }
 }
