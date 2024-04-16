@@ -1,0 +1,145 @@
+This series of tests:
+ - does not reset random per test
+ - shillPush is movie #2 (internalID: 2) - Jumanji (1995), shillNuke is movie #260 (internalID: 255) - Star Wars: Episode IV - A New Hope (1977)
+ - uses predRand (srand = 100)
+ - tests with 1, 5, 10, 20, 30, 50, and 100 shills (with 610 users - meaning 0.16%, 0.81%, 1.6%, 3.3%, 4.9%, 8.2%, 16.4%)
+ - shills are never in test set
+ - Evaluates with RMSE, and SHE
+
+1 SHILL - 0.16%
+Shill Strategy                  Algorithm         RMSE (no shills)    SHE (no shills)    RMSE (with 1 shill)    SHE (with 1 shill)    ShillPush    ShillNuke       Effect (SHE)
+SHILL_NAIVE_PUSH                user-user                                   122                                        122                2           NA           None
+SHILL_RANDOM_PUSH               user-user                                   88                                         111                2           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user                                   97                                         134                2           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user                                   110                                        341                2           NA           Correct
+SHILL_POPULAR_PUSH              user-user                                   118                                         97                2           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                          NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                          NA                NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user                                   639                                        639                NA          255          None
+SHILL_RANDOM_NUKE               user-user                                   647                                        782                NA          255          Opposite
+SHILL_LOVE_HATE_NUKE            user-user                                   722                                        853                NA          255          Opposite
+SHILL_BANDWAGON_NUKE            user-user                                   615                                        330                NA          255          Correct
+SHILL_POPULAR_NUKE              user-user                                   656                                        714                NA          255          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                          NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                          NA                NA          NA           NA
+
+
+
+5 SHILLS - 0.81%
+Shill Strategy                  Algorithm         RMSE (no shills)    SHE (no shills)    RMSE (with 5 shills)    SHE (with 5 shills)    ShillPush    ShillNuke       Effect (SHE)
+SHILL_NAIVE_PUSH                user-user                                   122                                          122                2           NA           None
+SHILL_RANDOM_PUSH               user-user                                   88                                           111                2           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user                                   97                                           134                2           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user                                   110                                          341                2           NA           Correct
+SHILL_POPULAR_PUSH              user-user                                   118                                           97                2           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                            NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                            NA                NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user                                   639                                          639                NA          255          None
+SHILL_RANDOM_NUKE               user-user                                   647                                          782                NA          255          Opposite
+SHILL_LOVE_HATE_NUKE            user-user                                   722                                          853                NA          255          Opposite
+SHILL_BANDWAGON_NUKE            user-user                                   615                                          330                NA          255          Correct
+SHILL_POPULAR_NUKE              user-user                                   656                                          714                NA          255          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                            NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                            NA                NA          NA           NA
+
+
+
+10 SHILLS - 1.6%
+Shill Strategy                  Algorithm         RMSE (no shills)    SHE (no shills)    RMSE (with 10 shills)    SHE (with 10 shills)    ShillPush    ShillNuke       Effect (SHE)
+SHILL_NAIVE_PUSH                user-user                                   122                                            122                2           NA           None
+SHILL_RANDOM_PUSH               user-user                                   88                                             111                2           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user                                   97                                             134                2           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user                                   110                                            341                2           NA           Correct
+SHILL_POPULAR_PUSH              user-user                                   118                                             97                2           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user                                   639                                            639                NA          255          None
+SHILL_RANDOM_NUKE               user-user                                   647                                            782                NA          255          Opposite
+SHILL_LOVE_HATE_NUKE            user-user                                   722                                            853                NA          255          Opposite
+SHILL_BANDWAGON_NUKE            user-user                                   615                                            330                NA          255          Correct
+SHILL_POPULAR_NUKE              user-user                                   656                                            714                NA          255          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+
+
+20 SHILLS - 3.3%
+Shill Strategy                  Algorithm         RMSE (no shills)    SHE (no shills)    RMSE (with 20 shills)    SHE (with 20 shills)    ShillPush    ShillNuke       Effect (SHE)
+SHILL_NAIVE_PUSH                user-user                                   122                                            122                2           NA           None
+SHILL_RANDOM_PUSH               user-user                                   88                                             111                2           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user                                   97                                             134                2           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user                                   110                                            341                2           NA           Correct
+SHILL_POPULAR_PUSH              user-user                                   118                                             97                2           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user                                   639                                            639                NA          255          None
+SHILL_RANDOM_NUKE               user-user                                   647                                            782                NA          255          Opposite
+SHILL_LOVE_HATE_NUKE            user-user                                   722                                            853                NA          255          Opposite
+SHILL_BANDWAGON_NUKE            user-user                                   615                                            330                NA          255          Correct
+SHILL_POPULAR_NUKE              user-user                                   656                                            714                NA          255          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+
+
+30 SHILLS - 4.9%
+Shill Strategy                  Algorithm         RMSE (no shills)    SHE (no shills)    RMSE (with 30 shills)    SHE (with 30 shills)    ShillPush    ShillNuke       Effect (SHE)
+SHILL_NAIVE_PUSH                user-user                                   122                                            122                2           NA           None
+SHILL_RANDOM_PUSH               user-user                                   88                                             111                2           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user                                   97                                             134                2           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user                                   110                                            341                2           NA           Correct
+SHILL_POPULAR_PUSH              user-user                                   118                                             97                2           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user                                   639                                            639                NA          255          None
+SHILL_RANDOM_NUKE               user-user                                   647                                            782                NA          255          Opposite
+SHILL_LOVE_HATE_NUKE            user-user                                   722                                            853                NA          255          Opposite
+SHILL_BANDWAGON_NUKE            user-user                                   615                                            330                NA          255          Correct
+SHILL_POPULAR_NUKE              user-user                                   656                                            714                NA          255          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+
+
+50 SHILLS - 8.2%
+Shill Strategy                  Algorithm         RMSE (no shills)    SHE (no shills)    RMSE (with 50 shills)    SHE (with 50 shills)    ShillPush    ShillNuke       Effect (SHE)
+SHILL_NAIVE_PUSH                user-user                                   122                                            122                2           NA           None
+SHILL_RANDOM_PUSH               user-user                                   88                                             111                2           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user                                   97                                             134                2           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user                                   110                                            341                2           NA           Correct
+SHILL_POPULAR_PUSH              user-user                                   118                                             97                2           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user                                   639                                            639                NA          255          None
+SHILL_RANDOM_NUKE               user-user                                   647                                            782                NA          255          Opposite
+SHILL_LOVE_HATE_NUKE            user-user                                   722                                            853                NA          255          Opposite
+SHILL_BANDWAGON_NUKE            user-user                                   615                                            330                NA          255          Correct
+SHILL_POPULAR_NUKE              user-user                                   656                                            714                NA          255          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                              NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                              NA                NA          NA           NA
+
+
+
+100 SHILLS - 16.4%
+Shill Strategy                  Algorithm         RMSE (no shills)    SHE (no shills)    RMSE (with 100 shills)    SHE (with 100 shills)    ShillPush    ShillNuke       Effect (SHE)
+SHILL_NAIVE_PUSH                user-user                                   122                                              122                2           NA           None
+SHILL_RANDOM_PUSH               user-user                                   88                                               111                2           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user                                   97                                               134                2           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user                                   110                                              341                2           NA           Correct
+SHILL_POPULAR_PUSH              user-user                                   118                                               97                2           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                                NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                                NA                NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user                                   639                                              639                NA          255          None
+SHILL_RANDOM_NUKE               user-user                                   647                                              782                NA          255          Opposite
+SHILL_LOVE_HATE_NUKE            user-user                                   722                                              853                NA          255          Opposite
+SHILL_BANDWAGON_NUKE            user-user                                   615                                              330                NA          255          Correct
+SHILL_POPULAR_NUKE              user-user                                   656                                              714                NA          255          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user                                   NA                                                NA                NA          NA           NA
+SHILL_PROBE_PUSH                user-user                                   NA                                                NA                NA          NA           NA

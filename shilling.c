@@ -28,20 +28,23 @@ Testing with:
 
 Shill Strategy                  Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
 SHILL_NAIVE_PUSH                user-user           122                    122                  1           NA           None
-SHILL_RANDOM_PUSH               user-user           122                    167                  1           NA           Correct
-SHILL_LOVE_HATE_PUSH            user-user           122                    142                  1           NA           Correct
-SHILL_BANDWAGON_PUSH            user-user           122                    167                  1           NA           Correct
-SHILL_POPULAR_PUSH              user-user           122                     85                  1           NA           Opposite
+SHILL_RANDOM_PUSH               user-user           88                     111                  1           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user           97                     134                  1           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user           110                    341                  1           NA           Correct
+SHILL_POPULAR_PUSH              user-user           118                     97                  1           NA           Opposite
 SHILL_REVERSE_BANDWAGON_PUSH    user-user           NA                      NA                  NA          NA           NA
 SHILL_PROBE_PUSH                user-user           NA                      NA                  NA          NA           NA
 
-SHILL_NAIVE_NUKE                user-user           633                    633                  NA          278          None
-SHILL_RANDOM_NUKE               user-user           633                    785                  NA          278          Opposite
-SHILL_LOVE_HATE_NUKE            user-user           633                    544                  NA          278          Correct
-SHILL_BANDWAGON_NUKE            user-user           633                    598                  NA          278          Correct
-SHILL_POPULAR_NUKE              user-user           633                    600                  NA          278          Correct
+SHILL_NAIVE_NUKE                user-user           639                    639                  NA          278          None
+SHILL_RANDOM_NUKE               user-user           647                    782                  NA          278          Opposite
+SHILL_LOVE_HATE_NUKE            user-user           722                    853                  NA          278          Opposite
+SHILL_BANDWAGON_NUKE            user-user           615                    330                  NA          278          Correct
+SHILL_POPULAR_NUKE              user-user           656                    714                  NA          278          Opposite
 SHILL_REVERSE_BANDWAGON_PUSH    user-user           NA                      NA                  NA          NA           NA
 SHILL_PROBE_PUSH                user-user           NA                      NA                  NA          NA           NA
+
+Analysis:
+
 */
 #include "include/csvParser.h"
 #include <math.h>
@@ -118,7 +121,7 @@ typedef struct {
 } model_t;
 
 /* random functions */
-unsigned long predSrand = 1; // starting value for randPredictive
+unsigned long predSrand = 100; // starting value for randPredictive
 int randPredictive(void) { // https://stackoverflow.com/questions/65980429/same-srand-seeds-produces-different-values-on-different-computers
     predSrand = predSrand * 1103515245 + 12345;
     return (unsigned int) (predSrand / 65536) % 32768;
@@ -160,12 +163,12 @@ void modelInit(model_t *selfp) {
     self.userReference = list_init();
     self.predictions = list_init();
 
-    self.shillPush = 1; // we are shilling for toy story
+    self.shillPush = 2; // we are shilling for jumanji (1995)
     self.shillPushRandomAmount = 15; // default 15
     self.shillPushPopularAmount = 15; // default 15
     self.shillPushProbeAmount = 3; // default is 3
 
-    self.shillNuke = 278; // we are nuking shawshank redemption
+    self.shillNuke = 255; // we are nuking Star Wars: Episode IV - A New Hope (1977)
     self.shillNukeRandomAmount = 15; // default 15
     self.shillNukePopularAmount = 15; // default is 15
     self.shillNukeProbeAmount = 3; // default is 3
@@ -240,7 +243,7 @@ void model_free(model_t *selfp, char debug) {
     list_free(selfp -> testUsers);
     if (debug)
         printf("freed testUsers\n");
-    list_free_debug(selfp -> shills);
+    list_free(selfp -> shills);
     if (debug)
         printf("freed shills\n");
     list_free(selfp -> userReference);
@@ -444,7 +447,7 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
 
             int randomMovie;
-            for (int j = 0; j < self.shillPushRandomAmount; j++) {
+            for (int j = 0; j < self.shillNukeRandomAmount; j++) {
                 randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
                 while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
                     randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
@@ -1027,14 +1030,14 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
     printf("\nMAE Evaluation (No Shills): %lf\n", MAE(&self));
     printf("RMSE Evaluation (No Shills): %lf\n", RMSE(&self));
     if (shillStrategy > 10) {
-        printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
+        printf("Number of times \"Star Wars: Episode IV - A New Hope (1977)\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
     } else {
-        printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
+        printf("Number of times \"Jumanji\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
     }
     /* rank movies */
     rankMovies(&self);
-    printf("\nTop 10 Movies by ARL (No Shills):\n");
-    displayTopMovies(&self, self.ranked, 10);
+    // printf("\nTop 10 Movies by ARL (No Shills):\n");
+    // displayTopMovies(&self, self.ranked, 10);
     // printf("global average rating: %lf\n", self.globalAverageRating);
     /* generate shills */
     populateShills(&self, 100, shillStrategy);
@@ -1047,34 +1050,35 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
     printf("\nMAE Evaluation (After Shills): %lf\n", MAE(&self));
     printf("RMSE Evaluation (After Shills): %lf\n", RMSE(&self));
     if (shillStrategy > 10) {
-        printf("Number of times \"Shawshank Redemption\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
+        printf("Number of times \"Star Wars: Episode IV - A New Hope (1977)\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 1));
     } else {
-        printf("Number of times \"Toy Story\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
+        printf("Number of times \"Jumanji\" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): %d\n", SHE(&self, 10, 0));
     }
     /* rank movies */
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (After Shills):\n");
     displayTopMovies(&self, self.ranked, 10);
-    model_free(&self, 1);
+    model_free(&self, 0);
     // reset randomness
-    predSrand = 1;
+    // predSrand = 1;
 }
 
 int main(int argc, char  *argv[]) {
+    int numberOfShills = 1;
     /* run push shills */
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_NAIVE_PUSH);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_RANDOM_PUSH);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_LOVE_HATE_PUSH);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_BANDWAGON_PUSH);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_POPULAR_PUSH);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_PROBE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_RANDOM_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_LOVE_HATE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_BANDWAGON_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_POPULAR_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_PROBE_PUSH);
 
     /* run nuke shills */
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_NAIVE_NUKE);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_RANDOM_NUKE);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_LOVE_HATE_NUKE);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_BANDWAGON_NUKE);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_POPULAR_NUKE);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_REVERSE_BANDWAGON_NUKE);
-    runSingularTest(PREDICTION_USER_USER, 100, SHILL_PROBE_NUKE);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_NUKE);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_RANDOM_NUKE);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_LOVE_HATE_NUKE);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_BANDWAGON_NUKE);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_POPULAR_NUKE);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_REVERSE_BANDWAGON_NUKE);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_PROBE_NUKE);
 }

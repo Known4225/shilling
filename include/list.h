@@ -13,7 +13,9 @@ MIT licensed, this is open source software.
 unitype list, supports a variety of types
 
 access items of a list:
-list -> data[0]
+list -> data[0].x
+ - where x is the type
+ - example: list -> data[0].d would get a double from item 0 of the list
 
 access length of list:
 list -> length

@@ -1,3 +1,24 @@
+Table:
+
+Shill Strategy                  Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
+SHILL_NAIVE_PUSH                user-user           122                    122                  1           NA           None
+SHILL_RANDOM_PUSH               user-user           88                     111                  1           NA           Correct
+SHILL_LOVE_HATE_PUSH            user-user           97                     134                  1           NA           Correct
+SHILL_BANDWAGON_PUSH            user-user           110                    341                  1           NA           Correct
+SHILL_POPULAR_PUSH              user-user           118                     97                  1           NA           Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user           NA                      NA                  NA          NA           NA
+SHILL_PROBE_PUSH                user-user           NA                      NA                  NA          NA           NA
+
+SHILL_NAIVE_NUKE                user-user           639                    639                  NA          278          None
+SHILL_RANDOM_NUKE               user-user           647                    782                  NA          278          Opposite
+SHILL_LOVE_HATE_NUKE            user-user           722                    853                  NA          278          Opposite
+SHILL_BANDWAGON_NUKE            user-user           615                    330                  NA          278          Correct
+SHILL_POPULAR_NUKE              user-user           656                    714                  NA          278          Opposite
+SHILL_REVERSE_BANDWAGON_PUSH    user-user           NA                      NA                  NA          NA           NA
+SHILL_PROBE_PUSH                user-user           NA                      NA                  NA          NA           NA
+
+
+Console Output:
 gcc shilling.c -O3 -o shilling.exe
 shilling.exe
 successfully loaded MovieLensData/movies.tsv
@@ -200,26 +221,6 @@ successfully loaded MovieLensData/ratings.csv
 initialisation complete!
 Generated UserReferenceCache
 
-MAE Evaluation (No Shills): 0.753657
-RMSE Evaluation (No Shills): 0.976909
-Number of times "Toy Story" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 101
-
-Top 10 Movies by ARL (After Shills):
-1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.86 with 279 ratings
-2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.35 with 295 ratings
-3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.32 with 266 ratings
-4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.18 with 249 ratings
-5. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.91 with 218 ratings
-6. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.91 with 240 ratings
-7. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.81 with 198 ratings
-8. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.80 with 196 ratings
-9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.68 with 170 ratings
-10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.53 with 180 ratings
-successfully loaded MovieLensData/movies.tsv
-successfully loaded MovieLensData/ratings.csv
-initialisation complete!
-Generated UserReferenceCache
-
 MAE Evaluation (No Shills): 0.748399
 RMSE Evaluation (No Shills): 0.974766
 Number of times "Shawshank Redemption" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 639
@@ -410,23 +411,3 @@ Top 10 Movies by ARL (After Shills):
 8. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 8.68 with 369 ratings
 9. (ID: 364, InternalID: 323) Lion King, The (1994), score: 8.65 with 155 ratings
 10. (ID: 150, InternalID: 124) Apollo 13 (1995), score: 8.65 with 176 ratings
-successfully loaded MovieLensData/movies.tsv
-successfully loaded MovieLensData/ratings.csv
-initialisation complete!
-Generated UserReferenceCache
-
-MAE Evaluation (No Shills): 0.746572
-RMSE Evaluation (No Shills): 0.979268
-Number of times "Shawshank Redemption" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 680
-
-Top 10 Movies by ARL (No Shills):
-1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.76 with 275 ratings
-2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.26 with 270 ratings
-3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.25 with 299 ratings
-4. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 10.04 with 231 ratings
-5. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.02 with 246 ratings
-6. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.96 with 247 ratings
-7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.83 with 195 ratings
-8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.76 with 200 ratings
-9. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.69 with 188 ratings
-10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.58 with 182 ratings
