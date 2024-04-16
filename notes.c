@@ -79,4 +79,66 @@ I forgot to check if toy story is breaking the top 10... My shills might be doin
 No it's working fine, the shills are correctly shilling (i think)
 It's just that my test users aren't seeing the devastating results of the shilling inflation ££
 Thats so weird. I'll do another investigation tomorrow
+
+
+
+
+
+Old Notes/Results (shill names and behaviours have since been altered):
+with srand = time(NULL), 100 shills, shill fill and blend amounts are 10
+
+Shill Strategy               Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
+SHILL_NAIVE_PUSH             user-user           122                    122                  1           NA           None
+SHILL_RANDOM_FILL_PUSH       user-user           78                     105                  1           NA           Correct
+SHILL_TARGETED_FILL_PUSH     user-user           111                    139                  1           NA           Correct
+SHILL_RANDOM_BLEND_PUSH      user-user           132                    158                  1           NA           Correct
+SHILL_TARGETED_BLEND_PUSH    user-user           89                     83                   1           NA           Opposite
+
+SHILL_NAIVE_NUKE             user-user          1719                   1719                  NA          278          None
+SHILL_RANDOM_FILL_NUKE       user-user          1601                   1951                  NA          278          Opposite
+SHILL_TARGETED_FILL_NUKE     user-user          1866                   1652                  NA          278          Correct
+SHILL_RANDOM_BLEND_NUKE      user-user          1781                   1717                  NA          278          Correct
+SHILL_TARGETED_BLEND_NUKE    user-user          1723                   1625                  NA          278          Correct
+
+I'm going to make one more table with srand set to a fixed value
+with randPredictive (predSrand = 1), 100 shills, shill fill and blend amounts are 10
+
+Shill Strategy               Algorithm      SHE (no shills)     SHE (with 100 shills)    ShillPush    ShillNuke       Effect
+SHILL_NAIVE_PUSH             user-user           122                    122                  1           NA           None
+SHILL_RANDOM_FILL_PUSH       user-user           122                    167                  1           NA           Correct
+SHILL_TARGETED_FILL_PUSH     user-user           122                    142                  1           NA           Correct
+SHILL_RANDOM_BLEND_PUSH      user-user           122                    167                  1           NA           Correct
+SHILL_TARGETED_BLEND_PUSH    user-user           122                     85                  1           NA           Opposite
+
+SHILL_NAIVE_NUKE             user-user           633                    633                  NA          278          None
+SHILL_RANDOM_FILL_NUKE       user-user           633                    785                  NA          278          Opposite
+SHILL_TARGETED_FILL_NUKE     user-user           633                    544                  NA          278          Correct
+SHILL_RANDOM_BLEND_NUKE      user-user           633                    598                  NA          278          Correct
+SHILL_TARGETED_BLEND_NUKE    user-user           633                    600                  NA          278          Correct
+
+Analysing:
+So it seems like certain strategies are more/less/counter effective.
+looks like the SHILL_TARGETED_BLEND_PUSH literally doesn't work. The item that is "pushed" is actually anti-pushed and is recommended less by the user-user system
+same goes with the SHILL_RANDOM_FILL_NUKE, the nuked item goes on more recommendation lists.
+So honestly both of these strategies still "work" but you just have to apply them oppositely.
+It doesn't make sense to me how rating shawshank redemption a 0/5 100 times would make it appear on MORE people's recommendation lists,
+but apparently this is the world we live in
+
+The shill strategies that categorically didn't work are the naive shills, the ones that just rate the one item and that's it.
+I'd guess that's because they were a 0% similarity with all of the "real" users and thus had 0 impact on their recommendations
+It literally didn't have any effect on the RMSE or MAE either, meaning the algorithm straight up ignored them.
 */
+
+#include "include/list.h"
+
+int main(int argc, char *argv[]) {
+    /* quick testing binary search */
+    list_t *test = list_init();
+    for (int i = 0; i < 100; i++) {
+        list_append(test, (unitype) i, 'i');
+    }
+    list_delete(test, 20);
+    for (int i = 0; i < 100; i++) {
+        printf("search for %d: %d\n", i, list_find_binary(test, i));
+    }
+}
