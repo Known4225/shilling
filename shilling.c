@@ -121,6 +121,7 @@ typedef struct {
 } model_t;
 
 /* random functions */
+#define PRED_RAND_MAX 32767
 unsigned long predSrand = 100; // starting value for randPredictive
 int randPredictive(void) { // https://stackoverflow.com/questions/65980429/same-srand-seeds-produces-different-values-on-different-computers
     predSrand = predSrand * 1103515245 + 12345;
@@ -131,7 +132,7 @@ extern inline int randomInt(int lowerBound, int upperBound) { // random integer 
     return (randPredictive() % (upperBound - lowerBound + 1) + lowerBound);
 }
 extern inline double randomDouble(double lowerBound, double upperBound) { // random double between lower and upper bound
-    return (randPredictive() * (upperBound - lowerBound) / RAND_MAX + lowerBound); // probably works idk
+    return (randPredictive() * (upperBound - lowerBound) / PRED_RAND_MAX + lowerBound); // probably works idk
 }
 
 /* loads the CSV files, initialises the lists, splits the train and test sets */
@@ -166,12 +167,12 @@ void modelInit(model_t *selfp) {
     self.shillPush = 2; // we are shilling for jumanji (1995)
     self.shillPushRandomAmount = 15; // default 15
     self.shillPushPopularAmount = 15; // default 15
-    self.shillPushProbeAmount = 3; // default is 3
+    self.shillPushProbeAmount = 5; // default is 5
 
     self.shillNuke = 255; // we are nuking Star Wars: Episode IV - A New Hope (1977)
     self.shillNukeRandomAmount = 15; // default 15
     self.shillNukePopularAmount = 15; // default is 15
-    self.shillNukeProbeAmount = 3; // default is 3
+    self.shillNukeProbeAmount = 5; // default is 5
 
     /* split train and test sets */
     self.testSize = self.trainRatings -> data[0].r -> length / 10; // the test size is 1/10 the ratings set
@@ -675,7 +676,7 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
             list_free(numberOfRatings);
         } else if (shillStrategy == SHILL_PROBE_PUSH) {
             // the probe push first rates n items randomly (n determined by shillProbeAmount). It then uses recommendation predictions to rate x items (rates them the predicted score ± 0.1). It then rates the pushed item.
-            // generatePredictions followed by populateShillsExtra() must be called after populateShills to complete this shill strategy
+            // combineUsersAndShills followed by generatePredictions followed by populateShillsExtra() must be called after populateShills to complete this shill strategy
             int randomMovie;
             for (int j = 0; j < self.shillPushProbeAmount; j++) {
                 randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
@@ -683,11 +684,13 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
                     randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
                 }
                 list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
-                list_append(self.shills -> data[i].r -> data[2].r, (unitype) randomDouble(0, 5), 'd');
+                double rating = randomDouble(0, 5);
+                // printf("rating: %lf\n", rating);
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) rating, 'd');
             }
         } else if (shillStrategy == SHILL_PROBE_NUKE) {
             // the probe nuke first rates n items randomly (n determined by shillProbeAmount). It then uses recommendation predictions to rate x items (rates them the predicted score ± 0.1). It then rates the nuked item.
-            // generatePredictions followed by populateShillsExtra() must be called after populateShills to complete this shill strategy
+            // combineUsersAndShills followed by generatePredictions followed by populateShillsExtra() must be called after populateShills to complete this shill strategy
             int randomMovie;
             for (int j = 0; j < self.shillNukeProbeAmount; j++) {
                 randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
@@ -708,10 +711,11 @@ void populateShills(model_t *selfp, int numberOfShills, int shillStrategy) {
 }
 
 /* helper function for the PROBE strategy which requires predictions to be generated between initial and later stages of the attack */
-void populateShillsExtra(model_t *selfp, int shillStrategy) {
+void populateShillsExtra(model_t *selfp, int numberOfShills, int shillStrategy) {
     model_t self = *selfp;
-    int shillID = self.trainUsers -> length + self.shills -> length; // start shill userIDs at the last userID + 1
-    for (int i = 0; i < self.shills -> length; i++) {
+    list_clear(self.shills);
+    int shillID = self.trainUsers -> length - numberOfShills; // we want to update the existing shills. This is a little messy
+    for (int i = 0; i < numberOfShills; i++) {
         list_append(self.shills, (unitype) list_init(), 'r');
         list_append(self.shills -> data[i].r, (unitype) shillID, 'i'); // userID
         list_append(self.shills -> data[i].r, (unitype) list_init(), 'r'); // list of movieIDs (that this shill has ranked)
@@ -719,28 +723,34 @@ void populateShillsExtra(model_t *selfp, int shillStrategy) {
         if (shillStrategy == SHILL_PROBE_PUSH) {
             // the probe push first rates n items randomly (n determined by shillProbeAmount). It then uses recommendation predictions to rate x items (rates them the predicted score ± 0.1). It then rates the pushed item.
             // in this stage the shill rates the top recommended movies the predicted value and then rates the push movie
-            int randomMovie;
             for (int j = 0; j < self.shillPushRandomAmount; j++) {
-                randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
-                while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
-                    randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+                double highestPredicted = -1;
+                int highestIndex = 0;
+                for (int k = 0; k < self.movies -> data[0].r -> length; k++) {
+                    if (list_count(self.shills -> data[i].r -> data[1].r, (unitype) k, 'i') == 0 && self.predictions -> data[shillID].r -> data[1].r -> data[k].d > highestPredicted) {
+                        highestPredicted = self.predictions -> data[shillID].r -> data[1].r -> data[k].d;
+                        highestIndex = k;
+                    }
                 }
-                list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
-                list_append(self.shills -> data[i].r -> data[2].r, (unitype) randomDouble(0, 5), 'd');
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) highestIndex, 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) highestPredicted, 'd');
             }
             list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillPush, 'i');
             list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 5.0, 'd');
         } else if (shillStrategy == SHILL_PROBE_NUKE) {
             // the probe nuke first rates n items randomly (n determined by shillProbeAmount). It then uses recommendation predictions to rate x items (rates them the predicted score ± 0.1). It then rates the nuked item.
             // in this stage the shill rates the top recommended movies the predicted value and then rates the nuke movie
-            int randomMovie;
-            for (int j = 0; j < self.shillPushRandomAmount; j++) {
-                randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
-                while (list_count(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i') == -1) {
-                    randomMovie = randomInt(0, self.movies -> data[0].r -> length - 1);
+            for (int j = 0; j < self.shillNukeRandomAmount; j++) {
+                double highestPredicted = -1;
+                int highestIndex = 0;
+                for (int k = 0; k < self.movies -> data[0].r -> length; k++) {
+                    if (list_count(self.shills -> data[i].r -> data[1].r, (unitype) k, 'i') == 0 && self.predictions -> data[shillID].r -> data[1].r -> data[k].d > highestPredicted) {
+                        highestPredicted = self.predictions -> data[shillID].r -> data[1].r -> data[k].d;
+                        highestIndex = k;
+                    }
                 }
-                list_append(self.shills -> data[i].r -> data[1].r, (unitype) randomMovie, 'i');
-                list_append(self.shills -> data[i].r -> data[2].r, (unitype) randomDouble(0, 5), 'd');
+                list_append(self.shills -> data[i].r -> data[1].r, (unitype) highestIndex, 'i');
+                list_append(self.shills -> data[i].r -> data[2].r, (unitype) highestPredicted, 'd');
             }
             list_append(self.shills -> data[i].r -> data[1].r, (unitype) self.shillNuke, 'i');
             list_append(self.shills -> data[i].r -> data[2].r, (unitype) (double) 0.0, 'd');
@@ -757,6 +767,22 @@ void populateShillsExtra(model_t *selfp, int shillStrategy) {
 /* put shills in trainUser list */
 void combineUsersAndShills(model_t *selfp) {
     model_t self = *selfp;
+    for (int i = 0; i < self.shills -> length; i++) {
+        /* MUST COPY TO AVOID DOUBLE FREE */
+        list_t *copied = list_init();
+        list_copy(copied, self.shills -> data[i].r);
+        list_append(self.trainUsers, (unitype) copied, 'r');
+    }
+    *selfp = self;
+}
+
+/* used for probe shills to update them from the probe stage to attack stage */
+void updateShills(model_t *selfp) {
+    /* this function simply deletes the number of shills users and adds the shills back */
+    model_t self = *selfp;
+    for (int i = 0; i < self.shills -> length; i++) {
+        list_pop(self.trainUsers);
+    }
     for (int i = 0; i < self.shills -> length; i++) {
         /* MUST COPY TO AVOID DOUBLE FREE */
         list_t *copied = list_init();
@@ -1154,14 +1180,18 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
     // displayTopMovies(&self, self.ranked, 10);
     // printf("global average rating: %lf\n", self.globalAverageRating);
     /* generate shills */
-    populateShills(&self, 100, shillStrategy);
+    populateShills(&self, numberOfShills, shillStrategy);
     if (shillStrategy == SHILL_PROBE_PUSH || shillStrategy == SHILL_PROBE_NUKE) {
         /* special case: probe shills need access to their own predictions to complete their ratings */
+        combineUsersAndShills(&self);
+        generateUserReferenceCache(&self); // cached for speed
         generatePredictions(&self, predictionMethod);
-        populateShillsExtra(&self, shillStrategy); // mutates existing shills
+        populateShillsExtra(&self, numberOfShills, shillStrategy); // mutates existing shills
+        updateShills(&self); // readds the shills
+    } else {
+        /* combine users and shills */
+        combineUsersAndShills(&self);
     }
-    /* combine users and shills */
-    combineUsersAndShills(&self);
     /* generate predictions */
     generateUserReferenceCache(&self); // cached for speed
     generatePredictions(&self, predictionMethod);
@@ -1183,14 +1213,15 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
 }
 
 int main(int argc, char  *argv[]) {
-    int numberOfShills = 1;
+    int numberOfShills = 100;
     /* run push shills */
-    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_PUSH);
-    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_RANDOM_PUSH);
-    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_LOVE_HATE_PUSH);
-    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_BANDWAGON_PUSH);
-    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_POPULAR_PUSH);
+    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_PUSH);
+    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_RANDOM_PUSH);
+    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_LOVE_HATE_PUSH);
+    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_BANDWAGON_PUSH);
+    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_POPULAR_PUSH);
     runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_PROBE_PUSH);
+    return 0;
 
     /* run nuke shills */
     runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_NUKE);
