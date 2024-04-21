@@ -1,6 +1,6 @@
 This series of tests:
  - does not reset random per test
- - shillPush is movie #2 (internalID: 2) - Jumanji (1995), shillNuke is movie #260 (internalID: 255) - Star Wars: Episode IV - A New Hope (1977)
+ - shillPush is movie #2 (internalID: 2) - Jumanji (1995), shillNuke is movie #260 (internalID: 225) - Star Wars: Episode IV - A New Hope (1977)
  - uses predRand (srand = 100)
  - tests with 1, 5, 10, 20, 30, 50, and 100 shills (with 610 users - meaning 0.16%, 0.81%, 1.6%, 3.3%, 4.9%, 8.2%, 16.4%)
  - shills are never in test set

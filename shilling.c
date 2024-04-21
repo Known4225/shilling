@@ -169,7 +169,7 @@ void modelInit(model_t *selfp) {
     self.shillPushPopularAmount = 15; // default 15
     self.shillPushProbeAmount = 5; // default is 5
 
-    self.shillNuke = 255; // we are nuking Star Wars: Episode IV - A New Hope (1977)
+    self.shillNuke = 225; // we are nuking Star Wars: Episode IV - A New Hope (1977)
     self.shillNukeRandomAmount = 15; // default 15
     self.shillNukePopularAmount = 15; // default is 15
     self.shillNukeProbeAmount = 5; // default is 5
@@ -759,7 +759,7 @@ void populateShillsExtra(model_t *selfp, int numberOfShills, int shillStrategy) 
         }
         shillID++;
     }
-    printShillMessage(self.shills -> length, shillStrategy);
+    // printShillMessage(self.shills -> length, shillStrategy);
     // list_print(self.shills);
     *selfp = self;
 }
@@ -1176,9 +1176,9 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
     }
     /* rank movies */
     rankMovies(&self);
-    // printf("\nTop 10 Movies by ARL (No Shills):\n");
-    // displayTopMovies(&self, self.ranked, 10);
-    // printf("global average rating: %lf\n", self.globalAverageRating);
+    printf("\nTop 10 Movies by ARL (No Shills):\n");
+    displayTopMovies(&self, self.ranked, 10);
+    printf("global average rating (No Shills): %lf\n", self.globalAverageRating);
     /* generate shills */
     populateShills(&self, numberOfShills, shillStrategy);
     if (shillStrategy == SHILL_PROBE_PUSH || shillStrategy == SHILL_PROBE_NUKE) {
@@ -1207,6 +1207,7 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
     rankMovies(&self);
     printf("\nTop 10 Movies by ARL (After Shills):\n");
     displayTopMovies(&self, self.ranked, 10);
+    printf("global average  (After shills): %lf\n", self.globalAverageRating);
     model_free(&self, 0);
     // reset randomness
     // predSrand = 1;
@@ -1215,13 +1216,12 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
 int main(int argc, char  *argv[]) {
     int numberOfShills = 100;
     /* run push shills */
-    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_PUSH);
-    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_RANDOM_PUSH);
-    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_LOVE_HATE_PUSH);
-    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_BANDWAGON_PUSH);
-    // runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_POPULAR_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_RANDOM_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_LOVE_HATE_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_BANDWAGON_PUSH);
+    runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_POPULAR_PUSH);
     runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_PROBE_PUSH);
-    return 0;
 
     /* run nuke shills */
     runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_NUKE);
