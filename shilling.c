@@ -772,7 +772,7 @@ void combineUsersAndShills(model_t *selfp) {
         list_copy(copied, self.shills -> data[i].r);
         list_append(self.trainUsers, (unitype) copied, 'r');
     }
-    printf("combined shills and trainUsers\");
+    printf("combined shills and trainUsers\n");
     *selfp = self;
 }
 
@@ -1215,6 +1215,10 @@ void runSingularTest(int predictionMethod, int numberOfShills, int shillStrategy
 
 int main(int argc, char  *argv[]) {
     int numberOfShills = 100;
+    if (argc > 1) {
+        sscanf(argv[1], "%d", &numberOfShills);
+    }
+    printf("Running test with %d shills\n", numberOfShills);
     /* run push shills */
     runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_NAIVE_PUSH);
     runSingularTest(PREDICTION_USER_USER, numberOfShills, SHILL_RANDOM_PUSH);
