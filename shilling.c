@@ -5,15 +5,14 @@ MIT licensed, this is open source software.
 
 13.04.24:
 This project creates a movie recommender based on the MovieLens latest small database (as of 13.04.24)
-It has three implemented prediction algorithms:
+https://grouplens.org/datasets/movielens/
+
+It has one implemented prediction algorithms:
  - User-user collaborative recommendation (from https://www.geeksforgeeks.org/user-based-collaborative-filtering)
- - Item-item collaborative recommendation (not implemented, i was lazy)
- - SVD (not implemented, once again, laziness)
-It has three metrics as well:
+It has two metrics as well:
  - MAE
  - RMSE
- - NDCG
-And two special made up metric:
+And two additional made up metrics:
  - ARL (Average rating * log) - a popularity/goodness metric applied to each item
  - SHE (Shill effectiveness) - counts the number of times the shilled item appears in test users recommendation lists, weighted so closer to the top is better
 
