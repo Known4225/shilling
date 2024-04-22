@@ -15,8 +15,6 @@ Or on linux:
 
 ## Recommendation Algorithms
  - User-user
- - Item-item
- - SVD
 
 ## Metrics
  - MAE
