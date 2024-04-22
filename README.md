@@ -19,6 +19,5 @@ Or on linux:
 ## Metrics
  - MAE
  - RMSE
- - NDCG
  - ARL
  - SHE
