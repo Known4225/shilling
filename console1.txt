@@ -1,0 +1,536 @@
+Console output (1 shill):
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.752508
+RMSE Evaluation (No Shills): 0.986770
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 11
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.83 with 282 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.34 with 290 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.25 with 269 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.09 with 245 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.01 with 251 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.94 with 223 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.83 with 193 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.71 with 200 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.66 with 174 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.61 with 182 ratings
+global average rating (No Shills): 3.494402
+
+Generated 1 shills with the SHILL_NAIVE_PUSH strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.752508
+RMSE Evaluation (After Shills): 0.986770
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 11
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.83 with 282 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.34 with 290 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.25 with 269 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.09 with 245 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.01 with 251 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.94 with 223 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.83 with 193 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.71 with 200 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.66 with 174 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.61 with 182 ratings
+global average  (After shills): 3.494463
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.754416
+RMSE Evaluation (No Shills): 0.987176
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 11
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.84 with 284 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.34 with 291 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.31 with 274 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.18 with 248 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.03 with 255 ratings
+6. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.95 with 200 ratings
+7. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.84 with 218 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.75 with 199 ratings
+9. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.65 with 185 ratings
+10. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.65 with 172 ratings
+global average rating (No Shills): 3.494424
+
+Generated 1 shills with the SHILL_RANDOM_PUSH strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.754373
+RMSE Evaluation (After Shills): 0.987121
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 11
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.84 with 284 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.34 with 291 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.31 with 274 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.18 with 248 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.03 with 255 ratings
+6. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.95 with 200 ratings
+7. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.84 with 218 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.75 with 199 ratings
+9. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.65 with 185 ratings
+10. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.65 with 172 ratings
+global average  (After shills): 3.495050
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.751299
+RMSE Evaluation (No Shills): 0.984624
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 8
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.89 with 277 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.31 with 269 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.25 with 289 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.11 with 247 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.00 with 252 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.88 with 226 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.84 with 194 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.63 with 190 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.62 with 172 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.51 with 180 ratings
+global average rating (No Shills): 3.493427
+
+Generated 1 shills with the SHILL_LOVE_HATE_PUSH strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.751242
+RMSE Evaluation (After Shills): 0.984556
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 8
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.89 with 277 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.31 with 269 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.25 with 289 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.11 with 247 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.00 with 252 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.88 with 226 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.84 with 194 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.63 with 190 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.62 with 172 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.51 with 180 ratings
+global average  (After shills): 3.493488
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.750594
+RMSE Evaluation (No Shills): 0.979551
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 16
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.86 with 282 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.25 with 261 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.23 with 291 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.05 with 247 ratings
+5. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.92 with 221 ratings
+6. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.90 with 245 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.76 with 195 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.74 with 203 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.69 with 170 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.61 with 187 ratings
+global average rating (No Shills): 3.492039
+
+Generated 1 shills with the SHILL_BANDWAGON_PUSH strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.750588
+RMSE Evaluation (After Shills): 0.979529
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 16
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.88 with 283 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.26 with 262 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.24 with 292 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.07 with 248 ratings
+5. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.94 with 222 ratings
+6. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.92 with 246 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.78 with 196 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.76 with 204 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.71 with 171 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.63 with 188 ratings
+global average  (After shills): 3.493538
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.751162
+RMSE Evaluation (No Shills): 0.980745
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 21
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.93 with 284 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.29 with 265 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.25 with 290 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.06 with 250 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.04 with 245 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.90 with 217 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.88 with 198 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.65 with 197 ratings
+9. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.58 with 189 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.57 with 179 ratings
+global average rating (No Shills): 3.493400
+
+Generated 1 shills with the SHILL_POPULAR_PUSH strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.750938
+RMSE Evaluation (After Shills): 0.980484
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 21
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.90 with 285 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.26 with 266 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.23 with 291 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.04 with 251 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.02 with 246 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.87 with 218 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.85 with 199 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.62 with 198 ratings
+9. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.55 with 190 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.54 with 180 ratings
+global average  (After shills): 3.493791
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.752926
+RMSE Evaluation (No Shills): 0.985663
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 8
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.86 with 282 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.35 with 284 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.32 with 277 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.05 with 243 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.00 with 249 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.92 with 224 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.89 with 203 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.75 with 196 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.62 with 166 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.55 with 191 ratings
+global average rating (No Shills): 3.493416
+
+Generated 1 shills with the SHILL_PROBE_PUSH strategy
+Generated UserReferenceCache
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.752836
+RMSE Evaluation (After Shills): 0.985546
+Number of times "Jumanji" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 8
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.86 with 282 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.35 with 284 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.32 with 277 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.05 with 243 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.00 with 249 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.92 with 224 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.89 with 203 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.75 with 196 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.62 with 166 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.53 with 192 ratings
+global average  (After shills): 3.493791
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.746610
+RMSE Evaluation (No Shills): 0.977404
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 370
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.83 with 279 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.30 with 270 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.30 with 295 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.09 with 250 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.03 with 246 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.91 with 223 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.82 with 194 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.65 with 196 ratings
+9. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.56 with 183 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.53 with 180 ratings
+global average rating (No Shills): 3.493135
+
+Generated 1 shills with the SHILL_NAIVE_NUKE strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.746610
+RMSE Evaluation (After Shills): 0.977404
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 370
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.83 with 279 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.30 with 270 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.30 with 295 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.09 with 250 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.03 with 246 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.87 with 224 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.82 with 194 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.65 with 196 ratings
+9. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.56 with 183 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.53 with 180 ratings
+global average  (After shills): 3.493141
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.754847
+RMSE Evaluation (No Shills): 0.989480
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 402
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.91 with 289 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.31 with 276 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.29 with 283 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.18 with 253 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.92 with 248 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.87 with 215 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.82 with 199 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.69 with 196 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.67 with 171 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.67 with 191 ratings
+global average rating (No Shills): 3.493284
+
+Generated 1 shills with the SHILL_RANDOM_NUKE strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.754666
+RMSE Evaluation (After Shills): 0.989270
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 404
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.91 with 289 ratings
+2. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.31 with 276 ratings
+3. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.29 with 283 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.18 with 253 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.92 with 248 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.83 with 216 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.82 with 199 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.69 with 196 ratings
+9. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.67 with 171 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.67 with 191 ratings
+global average  (After shills): 3.493874
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.756703
+RMSE Evaluation (No Shills): 0.985802
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 391
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.93 with 288 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.32 with 289 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.26 with 267 ratings
+4. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.05 with 257 ratings
+5. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.05 with 249 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.99 with 228 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.79 with 193 ratings
+8. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.64 with 175 ratings
+9. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.63 with 199 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.60 with 182 ratings
+global average rating (No Shills): 3.494188
+
+Generated 1 shills with the SHILL_LOVE_HATE_NUKE strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.756524
+RMSE Evaluation (After Shills): 0.985565
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 392
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.93 with 288 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.32 with 289 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.26 with 267 ratings
+4. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.05 with 257 ratings
+5. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.05 with 249 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.95 with 229 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.79 with 193 ratings
+8. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.64 with 175 ratings
+9. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.63 with 199 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.60 with 182 ratings
+global average  (After shills): 3.495019
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.748884
+RMSE Evaluation (No Shills): 0.975631
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 421
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.87 with 275 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.27 with 286 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.27 with 268 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.05 with 247 ratings
+5. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.97 with 227 ratings
+6. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.96 with 248 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.92 with 202 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.61 with 196 ratings
+9. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.59 with 182 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.56 with 186 ratings
+global average rating (No Shills): 3.492524
+
+Generated 1 shills with the SHILL_BANDWAGON_NUKE strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.748854
+RMSE Evaluation (After Shills): 0.975551
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 416
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.88 with 276 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.29 with 287 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.28 with 269 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.06 with 248 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.98 with 249 ratings
+6. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.93 with 203 ratings
+7. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.93 with 228 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.63 with 197 ratings
+9. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.61 with 183 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.58 with 187 ratings
+global average  (After shills): 3.493915
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.764019
+RMSE Evaluation (No Shills): 0.993867
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 403
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.89 with 285 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.41 with 299 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.22 with 263 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.12 with 245 ratings
+5. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.90 with 224 ratings
+6. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.89 with 243 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.88 with 197 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.68 with 202 ratings
+9. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.67 with 188 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.56 with 179 ratings
+global average rating (No Shills): 3.494683
+
+Generated 1 shills with the SHILL_POPULAR_NUKE strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.763822
+RMSE Evaluation (After Shills): 0.993624
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 403
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.87 with 286 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.39 with 300 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.19 with 264 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.09 with 246 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.87 with 244 ratings
+6. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.86 with 225 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.85 with 198 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.65 with 203 ratings
+9. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.65 with 189 ratings
+10. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.53 with 180 ratings
+global average  (After shills): 3.495019
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.762146
+RMSE Evaluation (No Shills): 0.988067
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 423
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.84 with 284 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.29 with 286 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.27 with 268 ratings
+4. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 10.00 with 227 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.97 with 248 ratings
+6. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 9.97 with 246 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.87 with 200 ratings
+8. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.71 with 170 ratings
+9. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.68 with 198 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.67 with 187 ratings
+global average rating (No Shills): 3.494303
+
+Generated 1 shills with the SHILL_REVERSE_BANDWAGON_NUKE strategy
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.761760
+RMSE Evaluation (After Shills): 0.987590
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 421
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.82 with 285 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.27 with 287 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.25 with 269 ratings
+4. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.96 with 228 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 9.95 with 249 ratings
+6. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 9.95 with 247 ratings
+7. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.87 with 200 ratings
+8. (ID: 858, InternalID: 660) Godfather, The (1972), score: 9.71 with 170 ratings
+9. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.68 with 198 ratings
+10. (ID: 1196, InternalID: 899) Star Wars: Episode V - The Empire Strikes Back (1980), score: 9.67 with 187 ratings
+global average  (After shills): 3.494397
+successfully loaded MovieLensData/movies.tsv
+successfully loaded MovieLensData/ratings.csv
+initialisation complete!
+Generated UserReferenceCache
+
+MAE Evaluation (No Shills): 0.752207
+RMSE Evaluation (No Shills): 0.982659
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 389
+
+Top 10 Movies by ARL (No Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.85 with 281 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.30 with 293 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.19 with 266 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.08 with 250 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.04 with 250 ratings
+6. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.93 with 202 ratings
+7. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.92 with 220 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.83 with 201 ratings
+9. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.62 with 180 ratings
+10. (ID: 1198, InternalID: 901) Raiders of the Lost Ark (Indiana Jones and the Raiders of the Lost Ark) (1981), score: 9.57 with 176 ratings
+global average rating (No Shills): 3.494838
+
+Generated 1 shills with the SHILL_PROBE_NUKE strategy
+Generated UserReferenceCache
+Generated UserReferenceCache
+
+MAE Evaluation (After Shills): 0.752044
+RMSE Evaluation (After Shills): 0.982442
+Number of times "Star Wars: Episode IV - A New Hope (1977)" appeared in top 10 recommendation list for test users (weighted so if it was number 1 it gets a score of 10): 389
+
+Top 10 Movies by ARL (After Shills):
+1. (ID: 318, InternalID: 278) Shawshank Redemption, The (1994), score: 10.85 with 281 ratings
+2. (ID: 356, InternalID: 315) Forrest Gump (1994), score: 10.30 with 293 ratings
+3. (ID: 296, InternalID: 258) Pulp Fiction (1994), score: 10.19 with 266 ratings
+4. (ID: 2571, InternalID: 1940) Matrix, The (1999), score: 10.08 with 250 ratings
+5. (ID: 593, InternalID: 511) Silence of the Lambs, The (1991), score: 10.04 with 250 ratings
+6. (ID: 2959, InternalID: 2227) Fight Club (1999), score: 9.92 with 203 ratings
+7. (ID: 260, InternalID: 225) Star Wars: Episode IV - A New Hope (1977), score: 9.88 with 221 ratings
+8. (ID: 527, InternalID: 462) Schindler's List (1993), score: 9.83 with 201 ratings
+9. (ID: 50, InternalID: 47) Usual Suspects, The (1995), score: 9.62 with 180 ratings
+10. (ID: 1198, InternalID: 901) Raiders of the Lost Ark (Indiana Jones and the Raiders of the Lost Ark) (1981), score: 9.57 with 176 ratings
+global average  (After shills): 3.495365
