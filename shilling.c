@@ -773,6 +773,7 @@ void combineUsersAndShills(model_t *selfp) {
         list_copy(copied, self.shills -> data[i].r);
         list_append(self.trainUsers, (unitype) copied, 'r');
     }
+    printf("combined shills and trainUsers\");
     *selfp = self;
 }
 
